@@ -133,48 +133,144 @@
         color: rgba(31, 35, 43, 0.6);
       }
 
-      form {
+      .book-search {
+        display: grid;
+        gap: 20px;
+      }
+
+      .book-search-row {
         display: flex;
+        align-items: center;
         justify-content: center;
         gap: 12px;
+        flex-wrap: wrap;
       }
 
-      input[type="text"] {
-        width: clamp(220px, 40vw, 340px);
-        padding: 12px 20px;
+      .input-wrapper {
+        display: flex;
+        align-items: stretch;
+        gap: 4px;
+        flex-wrap: nowrap;
+        padding: 4px;
         border-radius: 999px;
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        background: rgba(0, 0, 0, 0.2);
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      body.light-theme .input-wrapper {
+        background: rgba(15, 16, 20, 0.06);
+        border: 1px solid rgba(15, 16, 20, 0.16);
+      }
+
+      .input-wrapper:focus-within {
+        border-color: #9f7aea;
+        box-shadow: 0 0 0 3px rgba(159, 122, 234, 0.25);
+      }
+
+      .book-prefix-select,
+      .book-code-input {
+        appearance: none;
+        border: none;
+        background: transparent;
         color: inherit;
         font-size: 16px;
-        transition: border-color 0.2s ease;
-      }
-
-      body.light-theme input[type="text"] {
-        background: rgba(255, 255, 255, 0.9);
-        border: 1px solid rgba(31, 35, 43, 0.2);
-      }
-
-      input[type="text"]:focus {
-        outline: none;
-        border-color: #9f7aea;
-      }
-
-      button[type="submit"] {
-        border: none;
+        font-family: inherit;
+        padding: 12px 18px;
         border-radius: 999px;
-        padding: 12px 24px;
-        background: #3b82f6;
-        color: white;
+        outline: none;
+        min-width: 0;
+      }
+
+      .book-prefix-select {
+        min-width: 120px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+        cursor: pointer;
+      }
+
+      .book-code-input {
+        width: clamp(200px, 42vw, 320px);
+        border-left: 1px solid rgba(255, 255, 255, 0.12);
+      }
+
+      body.light-theme .book-code-input {
+        border-left: 1px solid rgba(15, 16, 20, 0.12);
+      }
+
+      .book-code-input::placeholder {
+        color: rgba(245, 245, 245, 0.5);
+      }
+
+      body.light-theme .book-code-input::placeholder {
+        color: rgba(31, 35, 43, 0.45);
+      }
+
+      .search-action {
+        border: none;
+        border-radius: 14px;
+        padding: 12px 28px;
+        background: #4b5563;
+        color: #f9fafc;
         font-weight: 600;
         font-size: 16px;
         cursor: pointer;
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
       }
 
-      button[type="submit"]:hover {
+      .search-action:hover {
         transform: translateY(-1px);
-        box-shadow: 0 12px 24px rgba(59, 130, 246, 0.3);
+        box-shadow: 0 12px 24px rgba(75, 85, 99, 0.35);
+        background: #374151;
+      }
+
+      .search-action:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+      }
+
+      .search-meta {
+        display: flex;
+        justify-content: center;
+        gap: 32px;
+        flex-wrap: wrap;
+      }
+
+      .search-meta__item {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        align-items: center;
+      }
+
+      .search-meta__label {
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: rgba(245, 245, 245, 0.6);
+      }
+
+      body.light-theme .search-meta__label {
+        color: rgba(31, 35, 43, 0.6);
+      }
+
+      .search-meta__value {
+        font-size: 15px;
+        font-weight: 600;
+      }
+
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        border: 0;
       }
 
       .gallery {
@@ -229,7 +325,7 @@
 
       .card-header {
         display: flex;
-        justify-content: space-between;
+        justify-content: flex-end;
         align-items: center;
         text-transform: uppercase;
         letter-spacing: 0.08em;
@@ -267,11 +363,20 @@
           padding: 48px 24px;
         }
 
-        form {
+        .book-search-row {
           flex-direction: column;
+          align-items: stretch;
         }
 
-        button[type="submit"] {
+        .input-wrapper {
+          width: 100%;
+        }
+
+        .book-code-input {
+          width: 100%;
+        }
+
+        .search-action {
           width: 100%;
         }
 
@@ -301,32 +406,71 @@
             <span aria-hidden="true">🌙</span>
             Tema
           </button>
-          <a href="#about">About</a>
-          <label>
-            Idioma
-            <select aria-label="Seleccionar idioma">
-              <option value="es">ES</option>
-              <option value="en">EN</option>
-              <option value="fr">FR</option>
-            </select>
-          </label>
+          <a href="#about">About Us</a>
+          <button type="button">Sign in</button>
         </nav>
       </header>
 
       <main>
         <section class="card">
           <div class="card-header">
-            <div>Contact</div>
             <button type="button">Sign in</button>
           </div>
           <div>
             <h1>¡Busca tu libro!</h1>
             <p>Ingresa el código del libro</p>
           </div>
-          <form>
-            <input type="text" placeholder="Ej: ABC-123" />
-            <button type="submit">Submit</button>
-          </form>
+          <section class="book-search" aria-label="Buscador de códigos de libro">
+            <div class="book-search-row">
+              <div class="input-wrapper">
+                <label class="sr-only" for="book-prefix">Prefijo del código</label>
+                <select id="book-prefix" class="book-prefix-select" name="book-prefix">
+                  <option value="">NO TIENE</option>
+                  <option value="AR">AR</option>
+                  <option value="BO">BO</option>
+                  <option value="BR">BR</option>
+                  <option value="CL">CL</option>
+                  <option value="CO">CO</option>
+                  <option value="CR">CR</option>
+                  <option value="CU">CU</option>
+                  <option value="DO">DO</option>
+                  <option value="EC">EC</option>
+                  <option value="SV">SV</option>
+                  <option value="GT">GT</option>
+                  <option value="HN">HN</option>
+                  <option value="MX">MX</option>
+                  <option value="NI">NI</option>
+                  <option value="PA">PA</option>
+                  <option value="PY">PY</option>
+                  <option value="PE">PE</option>
+                  <option value="PR">PR</option>
+                  <option value="UY">UY</option>
+                  <option value="VE">VE</option>
+                  <option value="ES">ES</option>
+                </select>
+                <label class="sr-only" for="book-code">Código del libro</label>
+                <input
+                  id="book-code"
+                  class="book-code-input"
+                  type="text"
+                  name="book-code"
+                  placeholder="Ej: 892.w312a"
+                  autocomplete="off"
+                />
+              </div>
+              <button type="button" class="search-action">Buscar</button>
+            </div>
+            <div class="search-meta">
+              <div class="search-meta__item">
+                <span class="search-meta__label">Código actual</span>
+                <span class="search-meta__value">Sin código</span>
+              </div>
+              <div class="search-meta__item">
+                <span class="search-meta__label">Última búsqueda</span>
+                <span class="search-meta__value">Aún no se ha buscado</span>
+              </div>
+            </div>
+          </section>
         </section>
 
         <section class="gallery" id="about">
