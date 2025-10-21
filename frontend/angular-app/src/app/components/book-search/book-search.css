@@ -1,0 +1,62 @@
+.book-prefix-select {
+  background-color: transparent;
+  color: var(--text-color);
+  border: none;
+  border-radius: 4px;
+  padding: 6px 10px;
+  margin-right: 8px;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 6px center;
+  background-size: 14px;
+  padding-right: 28px;
+  box-shadow: none;
+  font-size: 14px;
+  min-height: 32px;
+}
+
+.book-prefix-select option {
+  background-color: #1f232b;
+  color: #f5f5f5;
+  padding: 6px;
+  font-size: 14px;
+}
+
+body.light-theme .book-prefix-select option {
+  background-color: #f0f2f5;
+  color: #1f232b;
+}
+
+/* Eliminar scrollbar */
+select::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+select {
+  scrollbar-width: none;
+}
+
+/* Añadir espaciado entre opciones */
+option {
+  padding: 6px 10px;
+  margin: 2px 0;
+}
+
+/* Estilos para el campo de búsqueda */
+.search-filter {
+  margin-bottom: 10px;
+}
+
+.prefix-search-input {
+  width: 100%;
+  padding: 6px 10px;
+  border: 1px solid var(--border-color, #ccc);
+  border-radius: 4px;
+  background-color: transparent;
+  color: var(--text-color);
+  font-size: 14px;
+}
