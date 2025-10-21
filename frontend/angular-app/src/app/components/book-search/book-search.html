@@ -1,0 +1,49 @@
+<div class="card">
+  <div>
+    <h1>Find Your Book</h1>
+    <p>Codigo actual</p>
+  </div>
+  
+  <div class="book-search">
+    <div class="book-search-row">
+      <div class="input-wrapper">
+        <select #prefixSelect class="book-prefix-select" [(ngModel)]="selectedPrefix">
+          <option value="search" disabled>Buscar prefijo...</option>
+          <option *ngFor="let prefix of bookPrefixes" [value]="prefix.code">{{ prefix.display }}</option>
+        </select>
+        <input 
+          type="text" 
+          class="book-code-input" 
+          placeholder="Enter book code..." 
+          [(ngModel)]="bookCode"
+        >
+      </div>
+      <button class="search-action" (click)="searchBook()">Search</button>
+    </div>
+    
+    <div class="search-meta">
+      <div class="search-meta__item">
+        <div class="search-meta__label">Código</div>
+        <div class="search-meta__value">{{ bookCode || 'N/A' }}</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="gallery">
+  <h2>Book Location</h2>
+  <div class="image-grid">
+    <div class="image-placeholder">
+      <span>1</span>
+      Floor Map
+    </div>
+    <div class="image-placeholder">
+      <span>2</span>
+      Section View
+    </div>
+    <div class="image-placeholder">
+      <span>3</span>
+      Shelf Close-up
+    </div>
+  </div>
+</div>

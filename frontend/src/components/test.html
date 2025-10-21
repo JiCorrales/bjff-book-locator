@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>BJFF Book Locator</title>
+  <style>
+    :root{
+      --bg:#0b0d10; --fg:#f7f8fa; --surface:#151921; --muted:#96a0b5;
+      --primary:#3fa0ff; --border:#243046; --focus:#88c0ff;
+    }
+    @media (prefers-color-scheme: light){
+      :root{ --bg:#ffffff; --fg:#0b0d10; --surface:#f5f7fb; --muted:#5b667a; --border:#dde2ee; }
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.45 system-ui,Segoe UI,Roboto,Arial}
+    header{position:sticky;top:0;background:var(--surface);border-bottom:1px solid var(--border);z-index:10}
+    .wrap{max-width:1100px;margin:0 auto;padding:16px}
+    .row{display:flex;gap:12px;align-items:center;justify-content:space-between}
+    nav{display:flex;gap:8px;align-items:center}
+    main .hero{padding:32px 0}
+    h1{margin:0 0 8px;font-size:clamp(22px,3vw,28px)}
+    .search{display:flex;gap:8px;flex-wrap:wrap}
+    input[type="text"]{flex:1;min-width:240px;padding:12px;border:1px solid var(--border);border-radius:8px;background:#0000;color:var(--fg)}
+    input:focus{outline:2px solid var(--focus);outline-offset:2px}
+    button{padding:12px 16px;border:1px solid var(--border);background:var(--primary);color:#fff;border-radius:8px;cursor:pointer}
+    .grid{display:grid;grid-template-columns:1fr;gap:16px}
+    @media(min-width:900px){.grid{grid-template-columns:1.2fr .8fr}}
+    .card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px}
+    .chips{display:flex;gap:8px;flex-wrap:wrap}
+    .chip{border:1px solid var(--border);padding:6px 10px;border-radius:999px;color:var(--muted)}
+    .gallery{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    @media(min-width:900px){.gallery{grid-template-columns:1fr 1fr}}
+    .gallery img{width:100%;height:160px;object-fit:cover;border-radius:10px;border:1px solid var(--border)}
+    footer{margin-top:36px;padding:24px 0;color:var(--muted)}
+    a{color:var(--primary);text-decoration:none}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap row">
+      <div class="row" style="gap:10px">
+        <img src="logo.svg" alt="Biblioteca José Figueres Ferrer" height="28"/>
+        <strong>BJFF Book Locator</strong>
+      </div>
+      <nav>
+        <button aria-label="Cambiar tema">Tema</button>
+        <button aria-label="Cambiar idioma">ES</button>
+        <a href="/admin/login">Admin</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="hero">
+      <h1>Localiza tu libro por código</h1>
+      <p class="muted">Ingresa el código (Dewey) tal como aparece en el lomo.</p>
+      <form class="search" role="search" aria-label="Buscar por código" onsubmit="event.preventDefault();/* hook buscar */">
+        <label for="code" class="sr-only">Código de libro</label>
+        <input id="code" type="text" placeholder="Ej. 005.13 COR 2020" autocomplete="off" required/>
+        <button type="submit">Buscar</button>
+        <button type="button" aria-haspopup="dialog" onclick="/* abrir ayuda */">¿Cómo leer el código?</button>
+      </form>
+    </section>
+
+    <section class="grid" aria-live="polite">
+      <div class="card">
+        <h2>Ubicación del ejemplar</h2>
+        <div class="chips">
+          <span class="chip">Mueble: M-03</span>
+          <span class="chip">Estante: E-12</span>
+          <span class="chip">Anaquel: A-4</span>
+          <span class="chip">Rango: 005.10–005.99</span>
+        </div>
+        <div style="margin-top:12px">
+          <!-- Reemplazar por SVG/Canvas del mini-mapa -->
+          <img src="minimap-placeholder.png" alt="Esquema de la sala con el estante resaltado" style="width:100%;height:220px;object-fit:cover;border:1px solid var(--border);border-radius:10px"/>
+        </div>
+        <div style="margin-top:12px">
+          <button type="button">Ver cómo llegar</button>
+        </div>
+      </div>
+
+      <aside class="card">
+        <h3>Imágenes de referencia</h3>
+        <div class="gallery">
+          <img src="ref1.jpg" alt="Ejemplo de etiqueta con código Dewey"/>
+          <img src="ref2.jpg" alt="Mapa simple de estantes"/>
+          <img src="ref3.jpg" alt="Ubicación típica del código en el lomo"/>
+          <img src="ref4.jpg" alt="Cómo interpretar números y letras"/>
+        </div>
+      </aside>
+    </section>
+  </main>
+
+  <footer class="wrap">
+    <small>© BJFF — Proyecto académico. Accesibilidad · Contacto</small>
+  </footer>
+</body>
+</html>
