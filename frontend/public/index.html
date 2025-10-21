@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Buscador de Libros</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="page">
+      <header class="page-header">
+        <div>Examples/Waitlist</div>
+        <nav class="header-actions">
+          <button id="language-toggle" type="button">
+            <span aria-hidden="true">🌐</span>
+            Idioma
+          </button>
+          <button id="theme-toggle" type="button" aria-pressed="false">
+            <span aria-hidden="true">🌙</span>
+            Tema
+          </button>
+          <a href="#about">About Us</a>
+          <button type="button" class="header-sign-in">Sign in</button>
+        </nav>
+      </header>
+
+      <main>
+        <section class="card">
+          <div>
+            <h1>¡Busca tu libro!</h1>
+            <p>Ingresa el código del libro</p>
+          </div>
+          <section class="book-search" aria-label="Buscador de códigos de libro">
+            <div class="book-search-row">
+              <div class="input-wrapper">
+                <label class="sr-only" for="book-prefix">Prefijo del código</label>
+                <select id="book-prefix" class="book-prefix-select" name="book-prefix">
+                  <option value="">NO TIENE</option>
+                </select>
+                <label class="sr-only" for="book-code">Código del libro</label>
+                <input
+                  id="book-code"
+                  class="book-code-input"
+                  type="text"
+                  name="book-code"
+                  placeholder="Ej: 892.w312a"
+                  autocomplete="off"
+                />
+              </div>
+              <button type="button" class="search-action">Buscar</button>
+            </div>
+            <div class="search-meta">
+              <div class="search-meta__item">
+                <span class="search-meta__label">Código actual</span>
+                <span class="search-meta__value">Sin código</span>
+              </div>
+            </div>
+          </section>
+        </section>
+
+        <section class="gallery" id="about">
+          <h2>¿Dónde encontrar el código?</h2>
+          <div class="image-grid">
+            <div class="image-placeholder">
+              <span>1</span>
+              Espacio para imagen de ejemplo (portada o lomo)
+            </div>
+            <div class="image-placeholder">
+              <span>2</span>
+              Espacio para imagen de ejemplo (página interior)
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script type="module" src="./scripts/app.js"></script>
+  </body>
+</html>
