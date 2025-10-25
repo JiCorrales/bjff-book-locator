@@ -143,6 +143,7 @@ function buildComparableKey(
  * Punto de entrada del parser. Devuelve estructura y clave comparable.
  * Lanza errores descriptivos en caso de formato invalido.
  */
+
 export function parseClassificationCode(input: string): ParsedCode {
   const raw = input;
   const normalized = normalize(input);

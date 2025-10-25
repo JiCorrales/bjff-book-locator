@@ -305,7 +305,9 @@
     "test": "echo \"No tests configured\"",
     "parser": "ts-node src/scripts/parser-demo.ts",
     "test-similarity": "ts-node src/scripts/test-similarity.ts",
-    "db:update-keys": "ts-node src/scripts/update-comparable-keys.ts"
+    "db:update-keys": "ts-node src/scripts/update-comparable-keys.ts",
+    "db:create-procedures": "ts-node src/utils/database/create-procedures.ts",
+    "search-book": "ts-node src/utils/database/search-book.ts"
   },
   "keywords": [],
   "author": "",
