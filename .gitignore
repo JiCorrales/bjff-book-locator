@@ -1,1 +1,135 @@
+# ============================================
+# Node.js Dependencies
+# ============================================
 **/node_modules/
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# ============================================
+# Environment Variables (IMPORTANTE!)
+# ============================================
+# Archivos que contienen credenciales de BD
+**/.env
+**/.env.local
+**/.env.*.local
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# ============================================
+# Build Output
+# ============================================
+dist/
+dist-ssr/
+build/
+out/
+*.local
+
+# ============================================
+# TypeScript
+# ============================================
+*.tsbuildinfo
+*.js.map
+
+# ============================================
+# Angular Frontend
+# ============================================
+frontend/angular-app/.angular/
+frontend/angular-app/dist/
+frontend/angular-app/tmp/
+frontend/angular-app/out-tsc/
+frontend/angular-app/.sass-cache/
+
+# ============================================
+# IDE / Editors
+# ============================================
+# Visual Studio Code
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# ============================================
+# OS Files
+# ============================================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+
+# ============================================
+# Testing
+# ============================================
+coverage/
+*.lcov
+.nyc_output/
+.grunt/
+
+# ============================================
+# Logs
+# ============================================
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# ============================================
+# Database
+# ============================================
+# Archivos de backup de BD (si generas backups locales)
+*.sql.backup
+*.dump
+database/backups/
+
+# ============================================
+# Temporary Files
+# ============================================
+*.tmp
+*.temp
+.cache/
+.parcel-cache/
+
+# ============================================
+# Claude Code
+# ============================================
+# Mantener configuración de Claude pero no archivos temporales
+.claude/
+!.claude/commands/
+
+# ============================================
+# Project Specific
+# ============================================
+# Postman collections con credenciales (si las tienes)
+postman_test/**/env.*.json
