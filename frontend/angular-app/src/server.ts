@@ -5,11 +5,13 @@ import {
   writeResponseToNodeResponse,
 } from '@angular/ssr/node';
 import express from 'express';
+import morgan from 'morgan';
 import { join } from 'node:path';
 
 const browserDistFolder = join(import.meta.dirname, '../browser');
 
 const app = express();
+app.use(morgan('dev'));
 const angularApp = new AngularNodeAppEngine();
 
 /**
