@@ -12,6 +12,7 @@ import {
 } from '../../services/translation.service';
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router'
+import { LoginAccessService } from '../../services/login-access.service';
 
 interface LanguageOption {
   code: LanguageCode;
@@ -50,7 +51,8 @@ export class HeaderComponent implements OnDestroy {
   constructor(
     private host: ElementRef<HTMLElement>,
     private translation: TranslationService,
-    private router: Router
+    private router: Router,
+    private loginAccess: LoginAccessService
   ) {
     const initial = this.translation.currentLang;
     this.selectedLanguage =
@@ -133,6 +135,7 @@ export class HeaderComponent implements OnDestroy {
     };
   }
   goToLogin() {
+    this.loginAccess.grantAccess();
     this.router.navigate(['/login']);
   }
 }

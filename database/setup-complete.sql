@@ -12,9 +12,14 @@
 
 -- 1. Crear el esquema y las tablas
 SOURCE database/migrations/001_create_library_structure.sql;
+-- Crear tablas de Users/Roles desde el modelo (no usadas antes)
+SOURCE database/model/sqlCreation.sql;
 
 -- 2. Insertar datos de ejemplo (incluye Module_types)
 SOURCE database/seeds/001_insert_sample_data.sql;
+
+-- 2.1 Insertar usuarios, roles y relaciones
+SOURCE database/seeds/002_insert_users.sql;
 
 -- 3. Verificar que todo se insertó correctamente
 SELECT

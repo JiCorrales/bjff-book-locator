@@ -7,7 +7,7 @@ import { validateLibraryStructure, formatLocation, formatParsedCode, BookLocatio
 
 describe('CodeParser', () => {
   describe('Parseo de códigos Dewey estándar', () => {
-    test('debe parsear código Dewey simple', () => {
+    it('debe parsear código Dewey simple', () => {
       const result = CodeParser.parse('511.33 C823M');
       expect(result).toEqual({
         type: 'standard',

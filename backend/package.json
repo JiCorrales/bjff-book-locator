@@ -297,6 +297,7 @@
     "yocto-queue": "^0.1.0"
   },
   "devDependencies": {
+    "@types/jest": "^30.0.0",
     "@types/node": "^24.9.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3"
@@ -307,7 +308,8 @@
     "test-similarity": "ts-node src/scripts/test-similarity.ts",
     "db:update-keys": "ts-node src/scripts/update-comparable-keys.ts",
     "db:create-procedures": "ts-node src/utils/database/create-procedures.ts",
-    "search-book": "ts-node src/utils/database/search-book.ts"
+    "search-book": "ts-node src/utils/database/search-book.ts",
+    "db:ping": "ts-node src/scripts/db-ping.ts"
   },
   "keywords": [],
   "author": "",
