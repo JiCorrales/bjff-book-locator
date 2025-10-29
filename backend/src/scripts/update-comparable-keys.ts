@@ -3,12 +3,11 @@
  * Lee todos los rangos (range_start, range_end) y calcula key_start y key_end
  */
 
-import * as dotenv from 'dotenv';
 import * as mysql from 'mysql2/promise';
 import { parseClassificationCode } from '../utils/classificationParser/parser';
 
 // Cargar variables de entorno
-dotenv.config();
+require('dotenv').config();
 
 interface RangeRow {
   id: number;
@@ -24,7 +23,7 @@ async function main() {
     host: process.env.DB_HOST === 'localhost' ? '127.0.0.1' : process.env.DB_HOST || '127.0.0.1',
     port: parseInt(process.env.DB_PORT || '3306'),
     user: process.env.DB_USER || 'root',
-    password: process.env.DB_PASSWORD || 'AleeCR27',
+    password: process.env.DB_PASSWORD || '',
     database: process.env.DB_DATABASE || 'bjff_book_locator'
   });
 

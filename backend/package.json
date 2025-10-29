@@ -308,6 +308,8 @@
     "test-similarity": "ts-node src/scripts/test-similarity.ts",
     "db:update-keys": "ts-node src/scripts/update-comparable-keys.ts",
     "db:create-procedures": "ts-node src/utils/database/create-procedures.ts",
+    "db:migrate-images": "ts-node src/scripts/apply-image-path-migration.ts",
+    "db:update-image-paths": "ts-node src/scripts/update-image-paths.ts",
     "search-book": "ts-node src/utils/database/search-book.ts",
     "db:ping": "ts-node src/scripts/db-ping.ts"
   },
