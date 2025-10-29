@@ -21,7 +21,7 @@ HL_FILL   = (255, 230, 120, 190)
 HL_BORDER = (215, 145, 0, 255)
 TEXT_COLOR= (30, 30, 30)
 GLOW_COLOR= (255, 200, 80, 120)
-LABEL_TEXT= "!!!"
+LABEL_TEXT= ""
 FONT_PATH = None
 
 # ======== POSICIONES CALIBRADAS (en proporción al alto total del lienzo) ========
