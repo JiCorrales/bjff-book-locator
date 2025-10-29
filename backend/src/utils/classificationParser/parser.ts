@@ -34,12 +34,14 @@ export interface ParsedCode {
  * - elimina guiones (p.ej. S-237M23 -> S237M23)
  */
 function normalize(input: string): string {
+
   return input
     .trim()
     .toUpperCase()
     .normalize('NFKC')
     .replace(/\s+/g, ' ')
     .replace(/-/g, '');
+    
 }
 
 /** Determina el tipo de codigo segun prefijo de pais valido (LATAM) o no (DEWEY). */
