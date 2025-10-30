@@ -125,8 +125,6 @@ database/backups/
 # Claude Code
 # ============================================
 # Mantener configuración de Claude pero no archivos temporales
-.claude/
-!.claude/commands/
 
 # ============================================
 # Project Specific
