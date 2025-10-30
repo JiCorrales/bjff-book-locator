@@ -1,7 +1,10 @@
 import express, { NextFunction, Request, Response } from 'express';
 import cors, { CorsOptions } from 'cors';
 import * as path from 'path';
-// import chatbotRouter from './routes/chatbot'; // DISABLED - Waiting for teammate to finish chatbot module
+import chatbotRouter from './routes/chatbot';
+import modulesRouter from './routes/modules';
+import shelvingUnitsRouter from './routes/shelving-units';
+import shelvesRouter from './routes/shelves';
 import bookRoutes from './routes/index'; // Book Locator routes
 import { env } from './config/env';
 
@@ -32,10 +35,11 @@ app.get('/api/health', (_req: Request, res: Response) => {
   res.json({ status: 'ok' });
 });
 
-// Book Locator API routes
-app.use('/api', bookRoutes);
-
-// app.use('/api/chatbot', chatbotRouter); // DISABLED - Waiting for teammate to finish chatbot module
+app.use('/api/chatbot', chatbotRouter);
+app.use('/api/modules', modulesRouter);
+app.use('/api/shelving-units', shelvingUnitsRouter);
+app.use('/api/shelves', shelvesRouter);
+app.use('/api', bookRoutes); // Book Locator API routes
 
 app.use((_req: Request, res: Response) => {
   res.status(404).json({ message: 'Recurso no encontrado.' });

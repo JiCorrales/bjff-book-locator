@@ -5,22 +5,44 @@
       <div class="subtitle" *ngIf="subtitulo">{{ subtitulo }}</div>
     </div>
     <div class="actions">
-      <button class="btn ghost" (click)="volverArriba()" [disabled]="vista==='muebles'">Volver</button>
+      <button class="btn ghost" (click)="volverArriba()" [disabled]="vista === 'muebles'">
+        Volver
+      </button>
     </div>
   </header>
 
   <nav class="boxes">
-    <button class="box" [class.active]="vista==='muebles'" (click)="vista='muebles'">Muebles</button>
-    <button class="box" [class.active]="vista==='estantes'" (click)="seleccionado.mueble ? vista='estantes' : null" [disabled]="!seleccionado.mueble">Estantes</button>
-    <button class="box" [class.active]="vista==='anaqueles'" (click)="seleccionado.estante ? vista='anaqueles' : null" [disabled]="!seleccionado.estante">Anaqueles</button>
+    <button class="box" [class.active]="vista === 'muebles'" (click)="vista = 'muebles'">Muebles</button>
+    <button
+      class="box"
+      [class.active]="vista === 'estantes'"
+      (click)="seleccionado.mueble ? (vista = 'estantes') : null"
+      [disabled]="!seleccionado.mueble"
+    >
+      Estantes
+    </button>
+    <button
+      class="box"
+      [class.active]="vista === 'anaqueles'"
+      (click)="seleccionado.estante ? (vista = 'anaqueles') : null"
+      [disabled]="!seleccionado.estante"
+    >
+      Anaqueles
+    </button>
   </nav>
 
   <!-- Muebles -->
-  <section class="panel" [class.hidden]="vista!=='muebles'">
+  <section class="panel" [class.hidden]="vista !== 'muebles'">
     <h2>Muebles</h2>
     <table class="table">
       <thead>
-        <tr><th>Mueble</th><th>Rango</th><th>Estado</th><th>Ãšltima actualizaciÃ³n</th><th></th></tr>
+        <tr>
+          <th>Mueble</th>
+          <th>Rango</th>
+          <th>Estado</th>
+          <th>Última actualización</th>
+          <th></th>
+        </tr>
       </thead>
       <tbody>
         <tr *ngFor="let m of data">
@@ -28,40 +50,55 @@
           <td>{{ formato(m.rango) }}</td>
           <td>{{ m.rango.estado }}</td>
           <td>{{ m.rango.actualizado }}</td>
-          <td class="actions"><button class="btn view" (click)="seleccionarMueble(m)">Ver estantes</button></td>
+          <td class="actions">
+            <button class="btn view" (click)="seleccionarMueble(m)">Ver estantes</button>
+          </td>
         </tr>
       </tbody>
     </table>
   </section>
 
   <!-- Estantes del mueble seleccionado -->
-  <section class="panel" *ngIf="seleccionado.mueble" [class.hidden]="vista!=='estantes'">
-    <h2>Estantes de {{ seleccionado.mueble?.nombre }}</h2>
+  <section class="panel" *ngIf="seleccionado.mueble as mueble" [class.hidden]="vista !== 'estantes'">
+    <h2>Estantes de {{ mueble.nombre }}</h2>
     <table class="table">
       <thead>
-        <tr><th>Estante</th><th>Rango</th><th>Estado</th><th>Ãšltima actualizaciÃ³n</th><th></th></tr>
+        <tr>
+          <th>Estante</th>
+          <th>Rango</th>
+          <th>Estado</th>
+          <th>Última actualización</th>
+          <th></th>
+        </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let e of seleccionado.mueble?.estantes">
+        <tr *ngFor="let e of mueble.estantes">
           <td>{{ e.nombre }}</td>
           <td>{{ formato(e.rango) }}</td>
           <td>{{ e.rango.estado }}</td>
           <td>{{ e.rango.actualizado }}</td>
-          <td class="actions"><button class="btn view" (click)="seleccionarEstante(e)">Ver anaqueles</button></td>
+          <td class="actions">
+            <button class="btn view" (click)="seleccionarEstante(e)">Ver anaqueles</button>
+          </td>
         </tr>
       </tbody>
     </table>
   </section>
 
   <!-- Anaqueles del estante seleccionado -->
-  <section class="panel" *ngIf="seleccionado.estante" [class.hidden]="vista!=='anaqueles'">
-    <h2>Anaqueles de {{ seleccionado.estante?.nombre }}</h2>
+  <section class="panel" *ngIf="seleccionado.estante as estante" [class.hidden]="vista !== 'anaqueles'">
+    <h2>Anaqueles de {{ estante.nombre }}</h2>
     <table class="table">
       <thead>
-        <tr><th>Anaquel</th><th>Rango</th><th>Estado</th><th>Ãšltima actualizaciÃ³n</th></tr>
+        <tr>
+          <th>Anaquel</th>
+          <th>Rango</th>
+          <th>Estado</th>
+          <th>Última actualización</th>
+        </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let a of seleccionado.estante?.anaqueles">
+        <tr *ngFor="let a of estante.anaqueles">
           <td>{{ a.nombre }}</td>
           <td>{{ formato(a.rango) }}</td>
           <td>{{ a.rango.estado }}</td>

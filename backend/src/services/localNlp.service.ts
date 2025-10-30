@@ -5,6 +5,13 @@ export class LocalNlpAssistantService {
     const last = conversation.slice(-1)[0];
     const q = (last?.content ?? '').toLowerCase();
 
+    // Saludos comunes
+    if (/^(hola|buenas|buenos\s*dias|buenas\s*tardes|buenas\s*noches|hey|saludos)\b/.test(q)) {
+      const hour = new Date().getHours();
+      const timeGreeting = hour < 12 ? 'Buenos dias' : hour < 19 ? 'Buenas tardes' : 'Buenas noches';
+      return `${timeGreeting}, soy Lia. Puedo ayudarte a: “Buscar libro por codigo”, “Horarios y servicios disponibles”, “Politicas de prestamo”, “Acceso a colecciones digitales” o “Contactar al personal”. ¿Sobre que deseas conversar?`;
+    }
+
     // Intentos principales (español)
     if (/^(buscar|encontrar)\s+libro/.test(q) || /codigo\b/.test(q)) {
       return 'Para buscar un libro por código: usa el buscador de la página principal, elige el prefijo (por ejemplo ES) y escribe el identificador numérico. Te mostraré piso, sección y estante. ¿Quieres que te guíe paso a paso?';
