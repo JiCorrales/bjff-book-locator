@@ -49,6 +49,12 @@ export class LibraryAssistantService {
   constructor() {
     this.client = env.OPENAI_API_KEY ? new OpenAI({ apiKey: env.OPENAI_API_KEY }) : null;
     this.systemPrompt = defaultSystemPrompt;
+
+    if (this.client) {
+      console.info(`[chatbot] OpenAI habilitado con el modelo ${env.OPENAI_MODEL}`);
+    } else {
+      console.info('[chatbot] OpenAI deshabilitado; se usara NLP local como respaldo.');
+    }
   }
 
   async reply(conversation: ChatMessage[]): Promise<string> {
@@ -70,6 +76,9 @@ export class LibraryAssistantService {
       }))
       .slice(-20);
 
+    const startedAt = Date.now();
+    console.info(`[chatbot] [OpenAI] Solicitud enviada con ${sanitized.length} mensajes.`);
+
     const response = await this.client.responses.create({
       model: env.OPENAI_MODEL,
       input: [
@@ -82,6 +91,8 @@ export class LibraryAssistantService {
       temperature: env.OPENAI_TEMPERATURE,
       max_output_tokens: env.OPENAI_MAX_OUTPUT_TOKENS,
     });
+
+    console.info(`[chatbot] [OpenAI] Respuesta recibida en ${Date.now() - startedAt} ms.`);
 
     const plainText = (response.output_text ?? '').trim();
 

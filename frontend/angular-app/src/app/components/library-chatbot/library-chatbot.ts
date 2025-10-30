@@ -33,25 +33,13 @@ export class LibraryChatbotComponent implements OnDestroy {
   protected readonly messages = this.chatbot.conversation;
   protected readonly isBusy = this.chatbot.busy;
   protected readonly error = this.chatbot.lastError;
-  protected readonly detailLevel = this.chatbot.detailLevel;
-  protected readonly detailLevelLabel = computed(() => {
-    const value = this.detailLevel();
-    if (value <= 30) {
-      return `${value}% · Respuestas concisas`;
-    }
-    if (value >= 70) {
-      return `${value}% · Respuestas detalladas`;
-    }
-    return `${value}% · Respuestas equilibradas`;
-  });
-  protected readonly detailStops = [
-    { value: 0, label: 'Conciso' },
-    { value: 50, label: 'Equilibrado' },
-    { value: 100, label: 'Detallado' },
-  ];
+  
 
   @ViewChild('messageInput')
   private messageInput?: ElementRef<HTMLTextAreaElement>;
+
+  @ViewChild('messagesList')
+  private messagesList?: ElementRef<HTMLDivElement>;
 
   @HostBinding('attr.data-theme')
   get dataTheme(): string {
@@ -70,6 +58,7 @@ export class LibraryChatbotComponent implements OnDestroy {
     if (this.isOpen) {
       this.focusInput();
       this.updateOverflowState();
+      this.scrollToBottom();
     }
   }
 
@@ -92,6 +81,7 @@ export class LibraryChatbotComponent implements OnDestroy {
     this.isInputOverflow = false;
     this.focusInput();
     this.updateOverflowState();
+    this.scrollToBottom();
   }
 
   protected handleKeydown(event: KeyboardEvent) {
@@ -121,25 +111,17 @@ export class LibraryChatbotComponent implements OnDestroy {
     this.isInputOverflow = false;
     this.focusInput();
     this.updateOverflowState();
+    this.scrollToBottom();
   }
 
   protected shouldShowSuggestions(): boolean {
     return !this.isBusy() && this.messages().length <= 4;
   }
 
-  protected handleDetailLevelInput(event: Event) {
-    const input = event.target as HTMLInputElement;
-    const value = Number(input?.value ?? this.detailLevel());
-    this.chatbot.setDetailLevel(value);
-  }
-
   protected handleInput() {
     this.updateOverflowState();
   }
-
-  protected isSliderStopActive(stopValue: number): boolean {
-    return this.detailLevel() >= stopValue;
-  }
+  
 
   private focusInput() {
     setTimeout(() => {
@@ -160,6 +142,14 @@ export class LibraryChatbotComponent implements OnDestroy {
       textarea.scrollWidth - textarea.clientWidth > 2;
 
     this.isInputOverflow = hasOverflow;
+  }
+
+  private scrollToBottom() {
+    setTimeout(() => {
+      const el = this.messagesList?.nativeElement;
+      if (!el) return;
+      el.scrollTop = el.scrollHeight;
+    }, 0);
   }
 
   ngOnDestroy(): void {}

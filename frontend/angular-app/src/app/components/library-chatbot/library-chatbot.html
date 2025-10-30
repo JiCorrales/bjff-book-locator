@@ -34,39 +34,9 @@
     </header>
 
     <div class="assistant-content">
-      <section class="assistant-slider" aria-labelledby="assistant-detail-label">
-        <div class="assistant-slider-header">
-          <label id="assistant-detail-label" for="assistant-detail-range">
-            Nivel de detalle
-          </label>
-          <span class="assistant-slider-value">{{ detailLevelLabel() }}</span>
-        </div>
-        <input
-          type="range"
-          id="assistant-detail-range"
-          min="0"
-          max="100"
-          step="10"
-          [value]="detailLevel()"
-          (input)="handleDetailLevelInput($event)"
-          (change)="handleDetailLevelInput($event)"
-          aria-describedby="assistant-detail-hint"
-          [attr.aria-valuetext]="detailLevelLabel()"
-        >
-        <div class="assistant-slider-scale" aria-hidden="true">
-          <span
-            *ngFor="let stop of detailStops"
-            [class.is-active]="isSliderStopActive(stop.value)"
-          >
-            {{ stop.label }}
-          </span>
-        </div>
-        <p id="assistant-detail-hint" class="assistant-slider-hint">
-          Ajusta cuan concisas o desarrolladas deseas las respuestas de Lia.
-        </p>
-      </section>
+      
 
-      <div class="assistant-messages">
+      <div class="assistant-messages" #messagesList>
         <article
           *ngFor="let message of messages(); trackBy: trackById"
           class="assistant-message"

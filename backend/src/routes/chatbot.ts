@@ -72,6 +72,9 @@ const handleConversation =
         message: { role: 'assistant', content: reply },
       });
     } catch (error) {
+      console.warn("[chatbot] Error al consultar asistente remoto, activando fallback:",
+        error instanceof Error ? error.message : error,
+      );
       // Intentar siempre una respuesta rápida con NLP local como fallback
       try {
         const reply = await localNlpAssistantService.reply(conversation);
@@ -98,6 +101,9 @@ export const createChatbotRouter = (
     ? libraryAssistantService
     : (localNlpAssistantService as unknown as LibraryAssistantService),
 ) => {
+  console.info(
+    `[chatbot] Router inicializado con ${env.OPENAI_API_KEY ? 'asistente OpenAI' : 'NLP local'}.`,
+  );
   const router = Router();
   router.post('/conversation', handleConversation(assistant));
   router.post('/feedback', (req: Request, res: Response) => {
@@ -125,3 +131,4 @@ export const createChatbotRouter = (
 const router = createChatbotRouter();
 
 export default router;
+

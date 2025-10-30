@@ -135,11 +135,18 @@
   padding: 1rem 1.25rem;
   gap: 1rem;
   background: var(--surface-muted);
+  /* Critical: allow inner scroll areas inside flex container */
+  min-height: 0;
 }
 
 .assistant-messages {
   flex: 1;
   overflow-y: auto;
+  /* Ensure scroll area can shrink and show scrollbar */
+  min-height: 0;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+  scrollbar-width: thin; /* Firefox */
   padding-right: 0.3rem;
   display: flex;
   flex-direction: column;
@@ -326,6 +333,8 @@
   padding: 1rem 1.25rem 1.25rem;
   border-top: 1px solid var(--border-color);
   background: var(--surface);
+  /* Prevent input area from shrinking message scroll zone */
+  flex-shrink: 0;
 }
 
 .assistant-input textarea {

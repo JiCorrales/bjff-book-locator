@@ -68,8 +68,6 @@ export class ChatbotService {
   readonly suggestions = [
     'Buscar libro por codigo',
     'Horarios y servicios disponibles',
-    'Politicas de prestamo',
-    'Acceso a colecciones digitales',
     'Contactar al personal',
   ];
 
@@ -329,8 +327,8 @@ export class ChatbotService {
   }
 
   private buildPreferenceInstruction(): string {
-    const detail = this.detailLevelValue();
-    return `Preferencia de nivel de detalle: ${detail} de 100 (0 = respuestas muy concisas, 100 = respuestas muy desarrolladas). Tenlo presente al responder.`;
+    // Desactivado: no enviar instrucciones de preferencia de detalle
+    return '';
   }
 
   private mapError(error: unknown): string {
