@@ -11,7 +11,7 @@ import {
   LanguageCode
 } from '../../services/translation.service';
 import { Subscription } from 'rxjs';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { LoginAccessService } from '../../services/login-access.service';
 import { ThemeService, ThemeName } from '../../services/theme.service';
 import { AuthService } from '../../services/auth.service';
@@ -23,7 +23,7 @@ interface LanguageOption {
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [FormsModule, CommonModule],
+  imports: [FormsModule, CommonModule, RouterLink],
   templateUrl: './header.html',
   styleUrl: './header.css'
 })
@@ -164,6 +164,26 @@ export class HeaderComponent implements OnDestroy {
     } else {
       this.loginAccess.grantAccess();
       this.router.navigate(['/login']);
+    }
+  }
+
+  navigateToAbout() {
+    this.router.navigate(['/about']);
+  }
+
+  // Logout on window/tab close to ensure session cleanup
+  @HostListener('window:beforeunload')
+  onBeforeUnload() {
+    if (this.isLoggedIn) {
+      this.auth.logout();
+    }
+  }
+
+  // Safari/iOS compatibility: pagehide fires on bfcache navigations
+  @HostListener('window:pagehide')
+  onPageHide() {
+    if (this.isLoggedIn) {
+      this.auth.logout();
     }
   }
 }

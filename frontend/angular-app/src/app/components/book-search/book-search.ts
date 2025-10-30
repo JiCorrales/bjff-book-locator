@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { BOOK_PREFIXES, BookPrefixOption } from '../../models/book-prefix.model';
 import { TranslationService, LanguageCode } from '../../services/translation.service';
+import { BookLocatorService, SearchBookResponse, ShelfLocation } from '../../services/book-locator.service';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -17,6 +18,13 @@ export class BookSearchComponent implements OnDestroy {
   selectedPrefix = BOOK_PREFIXES[0]?.code ?? '';
   bookCode = '';
   prefixDropdownOpen = false;
+
+  // Search results
+  searchResult: SearchBookResponse | null = null;
+  shelfImageUrl: string | null = null;
+  isLoading = false;
+  errorMessage: string | null = null;
+
   uiText = {
     title: '',
     subtitle: '',
@@ -35,7 +43,8 @@ export class BookSearchComponent implements OnDestroy {
 
   constructor(
     private host: ElementRef<HTMLElement>,
-    private translation: TranslationService
+    private translation: TranslationService,
+    private bookLocatorService: BookLocatorService
   ) {
     this.updateText(this.translation.currentLang);
     this.languageSubscription = this.translation.currentLang$.subscribe((lang) => {
@@ -79,8 +88,45 @@ export class BookSearchComponent implements OnDestroy {
   }
 
   searchBook() {
-    console.log('Searching for book:', this.selectedPrefix, this.bookCode);
-    // Implement search functionality
+    // Reset previous results
+    this.errorMessage = null;
+    this.searchResult = null;
+    this.shelfImageUrl = null;
+
+    // Validate input
+    const fullCode = this.selectedPrefix
+      ? `${this.selectedPrefix} ${this.bookCode}`.trim()
+      : this.bookCode.trim();
+
+    if (!fullCode) {
+      this.errorMessage = 'Please enter a book code';
+      return;
+    }
+
+    // Start loading
+    this.isLoading = true;
+
+    // Call backend API
+    this.bookLocatorService.searchBook(fullCode).subscribe({
+      next: (response) => {
+        this.isLoading = false;
+        this.searchResult = response;
+
+        // Get image URL if available
+        if (response.location.shelf_image_path) {
+          this.shelfImageUrl = this.bookLocatorService.getShelfImageUrl(
+            response.location.shelf_image_path
+          );
+        }
+
+        console.log('Book found:', response);
+      },
+      error: (error) => {
+        this.isLoading = false;
+        this.errorMessage = error.message || 'An error occurred while searching';
+        console.error('Search error:', error);
+      }
+    });
   }
 
   private updateText(lang: LanguageCode) {

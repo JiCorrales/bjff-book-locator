@@ -1,0 +1,39 @@
+{
+  "includeCoAuthoredBy": false,
+  "permissions": {
+    "allow": [
+      "Bash(python:*)",
+      "Bash(cat:*)",
+      "Bash(Get-ChildItem -Path . -Directory -Recurse -Filter \"backend\")",
+      "Bash(Select-Object FullName)",
+      "Bash(npx tsc:*)",
+      "Bash(./node_modules/.bin/tsc:*)",
+      "Bash(node:*)",
+      "Bash(npm install:*)",
+      "Bash(dir:*)",
+      "Bash(findstr:*)",
+      "Bash(for dir in middleware services tests)",
+      "Bash(do:*)",
+      "Bash(ls:*)",
+      "Bash(done)",
+      "Bash(git checkout:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(npm run build:*)",
+      "Bash(npm uninstall:*)",
+      "Bash(tasklist:*)",
+      "Bash(powershell -Command:*)",
+      "Bash(mysql:*)",
+      "Bash(npm run start:prod:*)",
+      "Bash(taskkill:*)",
+      "Bash(curl:*)",
+      "Bash(npm start)",
+      "Bash(npx --yes ng serve:*)",
+      "Bash(set NODE_OPTIONS=--max-old-space-size=4096)",
+      "Bash(netstat:*)",
+      "Bash(git restore:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

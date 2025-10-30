@@ -46,10 +46,47 @@
         <div class="search-meta__value">{{ bookCode || uiText.codeFallback }}</div>
       </div>
     </div>
+
+    <!-- Loading indicator -->
+    <div *ngIf="isLoading" class="search-status loading">
+      <p>Searching...</p>
+    </div>
+
+    <!-- Error message -->
+    <div *ngIf="errorMessage && !isLoading" class="search-status error">
+      <p>{{ errorMessage }}</p>
+    </div>
+
+    <!-- Search results -->
+    <div *ngIf="searchResult && !isLoading" class="search-results">
+      <h3>Book Found!</h3>
+      <div class="result-details">
+        <p><strong>Code:</strong> {{ searchResult.code }}</p>
+        <p><strong>Location:</strong> {{ searchResult.location.location_text }}</p>
+        <p><strong>Module:</strong> {{ searchResult.location.module_name }}</p>
+        <p><strong>Unit:</strong> {{ searchResult.location.unit_number }} ({{ searchResult.location.unit_side }})</p>
+        <p><strong>Shelf:</strong> {{ searchResult.location.shelf_number }}</p>
+      </div>
+    </div>
   </div>
 </div>
 
-<div class="gallery">
+<div class="gallery" *ngIf="shelfImageUrl && !isLoading">
+  <h2>{{ uiText.galleryTitle }}</h2>
+  <div class="shelf-image-container">
+    <img
+      [src]="shelfImageUrl"
+      [alt]="'Shelf image for ' + (searchResult ? searchResult.location.location_text : '')"
+      class="shelf-image"
+    />
+    <div class="shelf-info">
+      <p><strong>{{ searchResult ? searchResult.location.module_name : '' }}</strong></p>
+      <p>{{ searchResult ? searchResult.location.location_text : '' }}</p>
+    </div>
+  </div>
+</div>
+
+<div class="gallery" *ngIf="!shelfImageUrl && !isLoading && !searchResult">
   <h2>{{ uiText.galleryTitle }}</h2>
   <div class="image-grid">
     <div class="image-placeholder">
