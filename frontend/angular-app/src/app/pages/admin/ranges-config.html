@@ -42,10 +42,11 @@
         <thead>
           <tr>
             <th>Mueble</th>
-            <th>C骴igo inicial</th>
-            <th>C骴igo final</th>
+            <th>C贸digo inicial</th>
+            <th>C贸digo final</th>
             <th>Estado</th>
-            <th>趌tima actualizaci髇</th>
+            <th>脷ltima actualizaci贸n</th>
+            <th>Acciones</th>
             <th></th>
           </tr>
         </thead>
@@ -60,10 +61,10 @@
                 <option>Inactivo</option>
               </select>
             </td>
-            <td>{{ m.rango.actualizado }}</td>
+            <td>{{ m.rango.actualizado || 'Sin actualizar' }}</td>
             <td class="actions">
-              <button class="btn" (click)="guardarRango(m.rango)">Guardar</button>
               <button class="btn view" (click)="seleccionarMueble(m)">Ver estantes</button>
+              <button class="btn edit" (click)="configurarMueble(m)">Editar</button>
             </td>
           </tr>
         </tbody>
@@ -77,16 +78,18 @@
         <thead>
           <tr>
             <th>Estante</th>
-            <th>C骴igo inicial</th>
-            <th>C骴igo final</th>
+            <th>Orientaci贸n</th>
+            <th>C贸digo inicial</th>
+            <th>C贸digo final</th>
             <th>Estado</th>
-            <th>趌tima actualizaci髇</th>
+            <th>脷ltima actualizaci贸n</th>
             <th></th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let e of mueble.estantes" [class.selected]="seleccionado.estante === e">
             <td>{{ e.nombre }}</td>
+            <td>{{ e.orientacion }}</td>
             <td><input [(ngModel)]="e.rango.inicio" /></td>
             <td><input [(ngModel)]="e.rango.fin" /></td>
             <td>
@@ -95,10 +98,11 @@
                 <option>Inactivo</option>
               </select>
             </td>
-            <td>{{ e.rango.actualizado }}</td>
+            <td>{{ e.rango.actualizado || 'Sin actualizar' }}</td>
             <td class="actions">
               <button class="btn" (click)="guardarRango(e.rango)">Guardar</button>
               <button class="btn view" (click)="seleccionarEstante(e)">Ver anaqueles</button>
+              <button class="btn edit" (click)="editEstante(e)">Editar</button>
             </td>
           </tr>
         </tbody>
@@ -112,10 +116,11 @@
         <thead>
           <tr>
             <th>Anaquel</th>
-            <th>C骴igo inicial</th>
-            <th>C骴igo final</th>
+            <th>C贸digo inicial</th>
+            <th>C贸digo final</th>
             <th>Estado</th>
-            <th>趌tima actualizaci髇</th>
+            <th>脷ltima actualizaci贸n</th>
+            <th>Acciones</th>
             <th></th>
           </tr>
         </thead>
@@ -130,11 +135,22 @@
                 <option>Inactivo</option>
               </select>
             </td>
-            <td>{{ a.rango.actualizado }}</td>
-            <td><button class="btn" (click)="guardarRango(a.rango)">Guardar</button></td>
+            <td>{{ a.rango.actualizado || 'Sin actualizar' }}</td>
+            <td class="actions">
+              <button class="btn" (click)="guardarRango(a.rango)">Guardar</button>
+              <button class="btn edit" (click)="editAnaquel(a)">Editar</button>
+            </td>
           </tr>
         </tbody>
       </table>
     </section>
   </ng-container>
 </div>
+
+<!-- Modal de edici贸n -->
+<app-edit-modal
+  [isOpen]="isEditModalOpen"
+  [item]="editingItem"
+  (closed)="onEditModalClosed()"
+  (saved)="onEditModalSaved()">
+</app-edit-modal>

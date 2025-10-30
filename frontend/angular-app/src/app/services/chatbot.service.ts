@@ -39,6 +39,7 @@ const MAX_STORED_MESSAGES = 40;
 const DEFAULT_DETAIL_LEVEL = 60;
 const API_ENDPOINT = '/api/chatbot/conversation';
 const FEEDBACK_ENDPOINT = '/api/chatbot/feedback';
+const CHAT_REQUEST_TIMEOUT_MS = 15000;
 
 const createId = (prefix: string) => {
   if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
@@ -134,7 +135,7 @@ export class ChatbotService {
           .post<ChatbotResponse>(API_ENDPOINT, {
             conversation: conversationForRequest,
           })
-          .pipe(timeout(2000)),
+          .pipe(timeout(CHAT_REQUEST_TIMEOUT_MS)),
       );
 
       const assistantContent = response.message?.content?.trim();
@@ -166,7 +167,7 @@ export class ChatbotService {
             ? {
                 ...message,
                 content:
-                  'No logre obtener una respuesta automatica. Puedes intentar de nuevo o contactar al personal en biblioteca@instituto.edu.',
+                  'No logre obtener una respuesta automatica. Puedes intentar de nuevo o contactar al personal en el mostrador.',
                 timestamp: now(),
                 pending: false,
                 error: true,
@@ -335,7 +336,7 @@ export class ChatbotService {
   private mapError(error: unknown): string {
     if (error instanceof HttpErrorResponse) {
       if (error.status === 503) {
-        return 'El asistente no esta disponible. Revisa la configuracion de la clave de OpenAI o contacta al administrador.';
+    return 'El asistente no esta disponible. Revisa la configuración de la clave de OpenAI o contacta al administrador.';
       }
 
       if (error.status >= 500) {

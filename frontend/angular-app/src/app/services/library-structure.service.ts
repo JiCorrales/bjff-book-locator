@@ -20,6 +20,7 @@ export interface ShelfNode {
 export interface ShelvingUnitNode {
   id: number;
   nombre: string;
+  orientacion: string;
   rango: StructureRange;
   anaqueles: ShelfNode[];
 }
@@ -91,9 +92,13 @@ export class LibraryStructureService {
         continue;
       }
 
+      const partNameRaw = String(unit.meta?.['part_name'] ?? '').toLowerCase();
+      const orientacion = partNameRaw === 'front' ? 'Frente' : partNameRaw === 'back' ? 'Atrás' : partNameRaw || '';
+
       const node: ShelvingUnitNode = {
         id: Number(unit.id),
         nombre: unit.nombre,
+        orientacion,
         rango: this.toRange(unit),
         anaqueles: [],
       };

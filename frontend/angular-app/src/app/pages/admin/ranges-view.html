@@ -40,7 +40,7 @@
           <th>Mueble</th>
           <th>Rango</th>
           <th>Estado</th>
-          <th>趌tima actualizaci髇</th>
+          <th>脷ltima actualizaci贸n</th>
           <th></th>
         </tr>
       </thead>
@@ -65,19 +65,22 @@
       <thead>
         <tr>
           <th>Estante</th>
+          <th>Orientaci贸n</th>
           <th>Rango</th>
           <th>Estado</th>
-          <th>趌tima actualizaci髇</th>
+          <th>脷ltima actualizaci贸n</th>
           <th></th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let e of mueble.estantes">
           <td>{{ e.nombre }}</td>
+          <td>{{ e.orientacion }}</td>
           <td>{{ formato(e.rango) }}</td>
           <td>{{ e.rango.estado }}</td>
           <td>{{ e.rango.actualizado }}</td>
           <td class="actions">
+            <button class="btn edit" *ngIf="canEdit" (click)="editEstante(e)">Editar</button>
             <button class="btn view" (click)="seleccionarEstante(e)">Ver anaqueles</button>
           </td>
         </tr>
@@ -94,7 +97,8 @@
           <th>Anaquel</th>
           <th>Rango</th>
           <th>Estado</th>
-          <th>趌tima actualizaci髇</th>
+          <th>脷ltima actualizaci贸n</th>
+          <th></th>
         </tr>
       </thead>
       <tbody>
@@ -103,8 +107,19 @@
           <td>{{ formato(a.rango) }}</td>
           <td>{{ a.rango.estado }}</td>
           <td>{{ a.rango.actualizado }}</td>
+          <td class="actions">
+            <button class="btn edit" *ngIf="canEdit" (click)="editAnaquel(a)">Editar</button>
+          </td>
         </tr>
       </tbody>
     </table>
   </section>
+
+  <!-- Modal de edici贸n -->
+  <app-edit-modal
+    [isOpen]="isEditModalOpen"
+    [item]="editingItem"
+    (closed)="onEditModalClosed()"
+    (saved)="onEditModalSaved()">
+  </app-edit-modal>
 </div>

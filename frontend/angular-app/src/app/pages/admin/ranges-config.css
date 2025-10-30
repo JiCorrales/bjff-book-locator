@@ -27,6 +27,14 @@ body:not(.light-theme) .panel input::placeholder{color:#cbd5e1}
 .btn.view:hover{background:var(--surface-muted)}
 .btn.view:active{transform:translateY(1px)}
 .btn.view:focus{outline:2px solid #c7d2fe;outline-offset:2px}
+.btn.config{background:#8b5cf6;color:#fff;border-color:#7c3aed}
+.btn.config:hover{background:#7c3aed}
+.btn.config:active{transform:translateY(1px)}
+.btn.config:focus{outline:2px solid #ddd6fe;outline-offset:2px}
+.btn.edit{background:#f97316;color:#fff;border-color:#ea580c}
+.btn.edit:hover{background:#ea580c}
+.btn.edit:active{transform:translateY(1px)}
+.btn.edit:focus{outline:2px solid #fed7aa;outline-offset:2px}
 tr.selected{background:var(--surface-muted);color:var(--text-color)}
 .table td.actions{display:flex;gap:12px;align-items:center}
 .hidden{display:none}

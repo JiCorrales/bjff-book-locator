@@ -11,7 +11,7 @@ import {
   LanguageCode
 } from '../../services/translation.service';
 import { Subscription } from 'rxjs';
-import { Router } from '@angular/router'
+import { Router } from '@angular/router';
 import { LoginAccessService } from '../../services/login-access.service';
 import { ThemeService, ThemeName } from '../../services/theme.service';
 import { AuthService } from '../../services/auth.service';
@@ -83,7 +83,7 @@ export class HeaderComponent implements OnDestroy {
     });
 
     this.isLoggedIn = this.auth.isLoggedIn();
-    this.authSubscription = toObservable(this.auth.state).subscribe(state => {
+    this.authSubscription = toObservable(this.auth.state).subscribe((state) => {
       this.isLoggedIn = state.isAuthenticated;
     });
   }
@@ -164,22 +164,6 @@ export class HeaderComponent implements OnDestroy {
     } else {
       this.loginAccess.grantAccess();
       this.router.navigate(['/login']);
-    }
-  }
-
-  // Logout on window/tab close to ensure session cleanup
-  @HostListener('window:beforeunload')
-  onBeforeUnload() {
-    if (this.isLoggedIn) {
-      this.auth.logout();
-    }
-  }
-
-  // Safari/iOS compatibility: pagehide fires on bfcache navigations
-  @HostListener('window:pagehide')
-  onPageHide() {
-    if (this.isLoggedIn) {
-      this.auth.logout();
     }
   }
 }

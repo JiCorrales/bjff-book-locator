@@ -1,34 +1,57 @@
 <main class="login-page" [attr.data-theme]="currentTheme">
   <section class="login-card">
-    <h1>Iniciar SesiÃ³n</h1>
+    <h1>Iniciar Sesión</h1>
     <form (ngSubmit)="submit()" #form="ngForm" class="login-form">
-      <div class="input-row" [class.invalid]="usernameModel.invalid && usernameModel.touched" [class.valid]="usernameModel.valid && usernameModel.touched">
+      <div class="input-row" [class.invalid]="emailModel.invalid && emailModel.touched" [class.valid]="emailModel.valid && emailModel.touched">
         <span class="icon" aria-hidden="true">
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
         </span>
-        <input id="username" name="username" [(ngModel)]="username" #usernameModel="ngModel" required pattern="^[A-Za-z0-9._-]+$" placeholder="Usuario"
-               (ngModelChange)="onFieldChange('username', $event)"
-               [attr.aria-invalid]="usernameModel.invalid && usernameModel.touched ? 'true' : 'false'"
-               aria-describedby="usernameError" />
+        <input
+          id="email"
+          name="email"
+          [(ngModel)]="email"
+          #emailModel="ngModel"
+          required
+          email
+          placeholder="Correo electrónico"
+          (ngModelChange)="onFieldChange('email', $event)"
+          [attr.aria-invalid]="emailModel.invalid && emailModel.touched ? 'true' : 'false'"
+          aria-describedby="emailError"
+        />
       </div>
-      <small id="usernameError" class="field-error" *ngIf="usernameModel.invalid && usernameModel.touched">Usuario es requerido o formato invÃ¡lido</small>
+      <small id="emailError" class="field-error" *ngIf="emailModel.invalid && emailModel.touched">
+        Ingresa un correo electrónico válido
+      </small>
+
       <div class="input-row" [class.invalid]="passwordModel.invalid && passwordModel.touched" [class.valid]="passwordModel.valid && passwordModel.touched">
         <span class="icon" aria-hidden="true">
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
         </span>
-        <input id="password" name="password" [(ngModel)]="password" #passwordModel="ngModel" required minlength="6" type="password" placeholder="ContraseÃ±a"
-               (ngModelChange)="onFieldChange('password', $event)"
-               [attr.aria-invalid]="passwordModel.invalid && passwordModel.touched ? 'true' : 'false'"
-               aria-describedby="passwordError" />
+        <input
+          id="password"
+          name="password"
+          [(ngModel)]="password"
+          #passwordModel="ngModel"
+          required
+          minlength="6"
+          type="password"
+          placeholder="Contraseña"
+          (ngModelChange)="onFieldChange('password', $event)"
+          [attr.aria-invalid]="passwordModel.invalid && passwordModel.touched ? 'true' : 'false'"
+          aria-describedby="passwordError"
+        />
       </div>
-      <small id="passwordError" class="field-error" *ngIf="passwordModel.invalid && passwordModel.touched">ContraseÃ±a mÃ­nima de 6 caracteres</small>
+      <small id="passwordError" class="field-error" *ngIf="passwordModel.invalid && passwordModel.touched">
+        La contraseña debe tener al menos 6 caracteres
+      </small>
+
       <button type="submit" class="btn-primary" [disabled]="buttonDisabled">
         {{ loading ? 'Entrando...' : 'ENTRAR' }}
       </button>
       <small class="enable-hint" aria-live="polite">{{ enableHint }}</small>
     </form>
 
-    <a class="forgot" href="#">Â¿Olvido la contraseÃ±a?</a>
-    <div class="error" *ngIf="error">{{ error }}</div>
+    <a class="forgot" href="#">¿Olvidó la contraseña?</a>
+    <div class="error" *ngIf="error" aria-live="assertive">{{ error }}</div>
   </section>
 </main>

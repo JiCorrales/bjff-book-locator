@@ -1,91 +1,143 @@
 <div class="users-page">
   <header class="page-header">
-    <h1>Users</h1>
-    <div class="metrics">
-      <div class="metric">
-        <div class="value">{{ users.length }}</div>
-        <div class="label">People</div>
-      </div>
+    <div>
+      <h1>Usuarios</h1>
+      <p class="subtitle">Administra cuentas de bibliotecarios y asistentes.</p>
+    </div>
+    <div class="metric">
+      <span class="value" aria-live="polite">{{ totalUsers }}</span>
+      <span class="label">Personas</span>
     </div>
   </header>
 
-  <section class="create-form">
-    <form [formGroup]="form" (ngSubmit)="submit()">
-      <input type="text" placeholder="Name" formControlName="name" />
-      <input type="text" placeholder="Phone" formControlName="phone" />
-      <input type="text" placeholder="Position" formControlName="position" />
-      <select formControlName="status">
-        <option value="Active">Active</option>
-        <option value="Inactive">Inactive</option>
-      </select>
-      <button class="btn" [disabled]="form.invalid">Create</button>
+  <section class="form-section" [attr.aria-busy]="isSubmitting">
+    <h2>{{ mode === 'create' ? 'Crear usuario' : 'Editar usuario' }}</h2>
+    <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+      <div class="grid">
+        <label>
+          <span>Nombre</span>
+          <input type="text" formControlName="firstName" autocomplete="given-name" />
+          <small *ngIf="getError('firstName')" class="error">{{ getError('firstName') }}</small>
+        </label>
+        <label>
+          <span>Apellido</span>
+          <input type="text" formControlName="lastName" autocomplete="family-name" />
+          <small *ngIf="getError('lastName')" class="error">{{ getError('lastName') }}</small>
+        </label>
+        <label>
+          <span>Correo electr�nico</span>
+          <input type="email" formControlName="email" autocomplete="email" />
+          <small *ngIf="getError('email')" class="error">{{ getError('email') }}</small>
+        </label>
+        <label>
+          <span>Rol</span>
+          <select formControlName="role">
+            <option *ngFor="let r of roleOptions" [value]="r">
+              {{ r === 'admin' ? 'Administrador' : 'Asistente' }}
+            </option>
+          </select>
+        </label>
+        <label>
+          <span>Estado</span>
+          <select formControlName="isActive">
+            <option [ngValue]="true">Activo</option>
+            <option [ngValue]="false">Inactivo</option>
+          </select>
+        </label>
+        <label *ngIf="form.get('role')?.value === 'assistant'">
+          <span>Tec ID</span>
+          <input type="text" formControlName="tecId" placeholder="TEC000001" />
+          <small *ngIf="getError('tecId')" class="error">{{ getError('tecId') }}</small>
+        </label>
+      </div>
+
+      <div class="grid">
+        <label>
+          <span>{{ mode === 'create' ? 'Contraseña' : 'Nueva contraseña' }}</span>
+          <input type="password" formControlName="password" autocomplete="new-password" />
+          <small *ngIf="getError('password')" class="error">{{ getError('password') }}</small>
+        </label>
+        <label>
+          <span>Confirmar contraseña</span>
+          <input type="password" formControlName="confirmPassword" autocomplete="new-password" />
+          <small *ngIf="getError('confirmPassword')" class="error">{{ getError('confirmPassword') }}</small>
+        </label>
+      </div>
+
+      <div class="form-actions">
+        <button class="btn primary" type="submit" [disabled]="form.invalid || isSubmitting">
+          {{ mode === 'create' ? 'Crear' : 'Guardar cambios' }}
+        </button>
+        <button
+          type="button"
+          class="btn ghost"
+          *ngIf="mode === 'edit'"
+          (click)="cancelEdit()"
+          [disabled]="isSubmitting"
+        >
+          Cancelar edici�n
+        </button>
+      </div>
+      <p class="helper">
+        Las contraseñas deben tener al menos 8 caracteres. Para asistentes, ingresa un Tec ID válido.
+      </p>
     </form>
   </section>
 
-  <section class="table-controls">
-    <input class="search" type="text" placeholder="Search" [(ngModel)]="filter" />
-  </section>
+  <section class="list-section">
+    <div class="list-controls">
+      <input
+        type="search"
+        class="search"
+        placeholder="Buscar por nombre o correo"
+        [formControl]="searchControl"
+      />
+      <select [(ngModel)]="statusFilter" aria-label="Filtrar por estado">
+        <option value="all">Todos</option>
+        <option value="active">Activos</option>
+        <option value="inactive">Inactivos</option>
+      </select>
+    </div>
 
-  <section class="table-wrap">
-    <table class="table">
+    <div class="error banner" *ngIf="loadError">{{ loadError }}</div>
+
+    <table class="table" aria-live="polite">
       <thead>
         <tr>
-          <th>User</th><th>Status</th><th>Phone number</th><th>Position</th><th>Activity</th><th></th>
+          <th>Usuario</th>
+          <th>Correo</th>
+          <th>Rol</th>
+          <th>Estado</th>
+          <th>Última actualización</th>
+          <th></th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let u of filtered">
+        <tr *ngFor="let user of filteredUsers" [class.editing]="selectedUser?.id === user.id">
           <td>
-            <ng-container *ngIf="editingId!==u.id; else editName">{{ u.name }}</ng-container>
-            <ng-template #editName><input [(ngModel)]="u.name" name="name_{{u.id}}" /></ng-template>
+            <div class="name">{{ user.fullName }}</div>
+            <div class="tec" *ngIf="user.tecId">Tec ID: {{ user.tecId }}</div>
           </td>
+          <td>{{ user.email }}</td>
+          <td>{{ user.role }}</td>
           <td>
-            <ng-container *ngIf="editingId!==u.id; else editStatus">{{ u.status }}</ng-container>
-            <ng-template #editStatus>
-              <select [(ngModel)]="u.status" name="status_{{u.id}}"><option>Active</option><option>Inactive</option></select>
-            </ng-template>
+            <span class="badge" [class.active]="user.isActive" [class.inactive]="!user.isActive">
+              {{ user.isActive ? 'Activo' : 'Inactivo' }}
+            </span>
           </td>
-          <td>
-            <ng-container *ngIf="editingId!==u.id; else editPhone">{{ u.phone }}</ng-container>
-            <ng-template #editPhone><input [(ngModel)]="u.phone" name="phone_{{u.id}}" /></ng-template>
-          </td>
-          <td>
-            <ng-container *ngIf="editingId!==u.id; else editPosition">{{ u.position }}</ng-container>
-            <ng-template #editPosition><input [(ngModel)]="u.position" name="position_{{u.id}}" /></ng-template>
-          </td>
-          <td>{{ u.activity }}</td>
+          <td>{{ user.updatedAt | date: 'medium' }}</td>
           <td class="actions">
-            <button *ngIf="editingId!==u.id" (click)="startEdit(u)" class="link">Edit</button>
-            <button *ngIf="editingId===u.id" (click)="saveEdit(u)" class="link confirm">Save</button>
-            <button *ngIf="editingId===u.id" (click)="cancelEdit()" class="link">Cancel</button>
-            <button (click)="openHistory(u)" class="link">History</button>
-            <button (click)="remove(u)" class="link danger">Delete</button>
+            <button class="link" (click)="edit(user)">Editar</button>
+            <button class="link danger" (click)="delete(user)">Eliminar</button>
           </td>
+        </tr>
+        <tr *ngIf="!isLoading && !filteredUsers.length">
+          <td colspan="6" class="empty">No hay usuarios que coincidan con la búsqueda.</td>
+        </tr>
+        <tr *ngIf="isLoading">
+          <td colspan="6" class="empty">Cargando usuarios…</td>
         </tr>
       </tbody>
     </table>
   </section>
-
-  <section class="pagination">
-    <button class="btn" [disabled]="page===1" (click)="page=page-1">Prev</button>
-    <span>Página {{page}} / {{ totalPages }}</span>
-    <button class="btn" [disabled]="page>=totalPages" (click)="page=page+1">Next</button>
-  </section>
-
-  <div class="modal-backdrop" *ngIf="showHistoryFor">
-    <div class="modal">
-      <header class="modal-header">
-        <h3>Historial de {{ showHistoryFor.name }}</h3>
-        <button class="close" (click)="closeHistory()">×</button>
-      </header>
-      <div class="modal-body">
-        <div class="history-item" *ngFor="let h of showHistoryFor?.history | slice:0">
-          <span class="badge" [class.create]="h.action==='create'" [class.update]="h.action==='update'" [class.delete]="h.action==='delete'">{{ h.action }}</span>
-          <span class="time">{{ h.at }}</span>
-          <span class="details">{{ h.details }}</span>
-        </div>
-        <div *ngIf="!showHistoryFor?.history?.length" class="empty">Sin actividades registradas.</div>
-      </div>
-    </div>
-  </div>
 </div>

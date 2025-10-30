@@ -1,0 +1,75 @@
+<div class="modal-overlay" *ngIf="isOpen" (click)="onOverlayClick($event)">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>Editar {{ getItemTypeName() }}</h2>
+      <button class="close-btn" (click)="onClose()">&times;</button>
+    </div>
+    
+    <form (ngSubmit)="onSubmit()" #editForm="ngForm" class="modal-body">
+      <!-- Nombre (solo para módulos y estantes) -->
+      <div class="form-group" *ngIf="item?.type !== 'shelf'">
+        <label for="name">Nombre:</label>
+        <input
+          type="text"
+          id="name"
+          name="name"
+          [(ngModel)]="formData.name"
+          required
+          class="form-control">
+      </div>
+      
+      <!-- Número -->
+      <div class="form-group">
+        <label for="number">Número:</label>
+        <input
+          type="number"
+          id="number"
+          name="number"
+          [(ngModel)]="formData.number"
+          required
+          min="1"
+          class="form-control">
+      </div>
+      
+      <!-- Rango de inicio -->
+      <div class="form-group">
+        <label for="range_start">Rango de inicio:</label>
+        <input
+          type="text"
+          id="range_start"
+          name="range_start"
+          [(ngModel)]="formData.range_start"
+          required
+          pattern="^[A-Za-z]{1,2}\d{2,4}$"
+          class="form-control"
+          placeholder="Ej: A100">
+      </div>
+      
+      <!-- Rango de fin -->
+      <div class="form-group">
+        <label for="range_end">Rango de fin:</label>
+        <input
+          type="text"
+          id="range_end"
+          name="range_end"
+          [(ngModel)]="formData.range_end"
+          required
+          pattern="^[A-Za-z]{1,2}\d{2,4}$"
+          class="form-control"
+          placeholder="Ej: A199">
+      </div>
+      
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="onClose()">
+          Cancelar
+        </button>
+        <button 
+          type="submit" 
+          class="btn btn-primary" 
+          [disabled]="!editForm.valid || isLoading">
+          {{ isLoading ? 'Guardando...' : 'Guardar' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

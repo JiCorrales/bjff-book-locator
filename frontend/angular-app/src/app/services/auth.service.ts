@@ -1,28 +1,43 @@
-import { Injectable, signal, inject, PLATFORM_ID } from '@angular/core';
+import { Injectable, PLATFORM_ID, inject, signal } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
+import { firstValueFrom } from 'rxjs';
 
-export type UserRole = 'admin' | 'assistant';
+export type UserRole = 'admin' | 'assistant' | 'isMaster';
 
 interface AuthState {
   isAuthenticated: boolean;
   role: UserRole | null;
-  username: string | null;
+  fullName: string | null;
+  email: string | null;
+  token: string | null;
 }
 
-// Nota: Este servicio usa credenciales locales de ejemplo.
-// En producción, reemplazar por peticiones a backend y JWT.
-const VALID_USERS: Record<string, { password: string; role: UserRole }> = {
-  'admin': { password: 'admin123', role: 'admin' },
-  'assistant': { password: 'assistant123', role: 'assistant' }
-};
+interface LoginResponse {
+  success: boolean;
+  token: string;
+  user: {
+    id: number;
+    email: string;
+    fullName: string;
+    role: UserRole;
+  };
+}
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly storageKey = 'bjff.auth';
-  readonly state = signal<AuthState>({ isAuthenticated: false, role: null, username: null });
+  readonly state = signal<AuthState>({
+    isAuthenticated: false,
+    role: null,
+    fullName: null,
+    email: null,
+    token: null,
+  });
 
   private readonly platformId = inject(PLATFORM_ID);
   private readonly isBrowser = isPlatformBrowser(this.platformId);
+  private readonly http = inject(HttpClient);
 
   constructor() {
     if (this.isBrowser) {
@@ -31,33 +46,63 @@ export class AuthService {
         try {
           const parsed = JSON.parse(raw) as AuthState;
           this.state.set(parsed);
-        } catch {}
+        } catch {
+          localStorage.removeItem(this.storageKey);
+        }
       }
     }
   }
 
-  login(username: string, password: string): Promise<boolean> {
-    // Simular login sin backend.
-    const user = VALID_USERS[username];
-    const ok = !!user && user.password === password;
-    if (ok) {
-      const auth: AuthState = { isAuthenticated: true, role: user.role, username };
+  async login(email: string, password: string): Promise<{ ok: boolean; message?: string }> {
+    try {
+      const response = await firstValueFrom(
+        this.http.post<LoginResponse>('/api/auth/login', { email, password }),
+      );
+
+      const auth: AuthState = {
+        isAuthenticated: true,
+        role: response.user.role,
+        fullName: response.user.fullName,
+        email: response.user.email,
+        token: response.token,
+      };
+
       this.state.set(auth);
       if (this.isBrowser) {
         localStorage.setItem(this.storageKey, JSON.stringify(auth));
       }
+
+      return { ok: true };
+    } catch (error: any) {
+      const message: string =
+        error?.error?.error?.message || 'Credenciales inv�lidas. Intenta nuevamente.';
+      return { ok: false, message };
     }
-    return Promise.resolve(ok);
   }
 
   logout(): void {
-    const auth: AuthState = { isAuthenticated: false, role: null, username: null };
+    const auth: AuthState = {
+      isAuthenticated: false,
+      role: null,
+      fullName: null,
+      email: null,
+      token: null,
+    };
     this.state.set(auth);
     if (this.isBrowser) {
       localStorage.removeItem(this.storageKey);
     }
   }
 
-  getRole(): UserRole | null { return this.state().role; }
-  isLoggedIn(): boolean { return this.state().isAuthenticated; }
+  getRole(): UserRole | null {
+    return this.state().role;
+  }
+
+  isLoggedIn(): boolean {
+    return this.state().isAuthenticated;
+  }
+
+  getToken(): string | null {
+    return this.state().token;
+  }
 }

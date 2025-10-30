@@ -49,7 +49,7 @@ export async function listModules(): Promise<BaseItemDto[]> {
 export async function listShelvingUnits(): Promise<BaseItemDto[]> {
   const rows = await queryRows<RowDataPacket>(
     `SELECT su.shelving_unit_id, su.unit_number, su.range_start, su.range_end, su.updated_at, su.is_active,
-            mp.module_part_id, m.module_id, m.module_number
+            mp.module_part_id, mp.part_name, m.module_id, m.module_number
      FROM Shelving_units su
      INNER JOIN Module_parts mp ON su.module_part_id = mp.module_part_id
      INNER JOIN Modules m ON mp.module_id = m.module_id
@@ -67,6 +67,7 @@ export async function listShelvingUnits(): Promise<BaseItemDto[]> {
       module_id: Number(r.module_id),
       module_number: Number(r.module_number),
       module_part_id: Number(r.module_part_id),
+      part_name: String(r.part_name),
       unit_number: Number(r.unit_number),
     },
   }));
@@ -76,7 +77,7 @@ export async function listShelves(): Promise<BaseItemDto[]> {
   const rows = await queryRows<RowDataPacket>(
     `SELECT s.shelf_id, s.shelf_number, s.range_start, s.range_end, s.updated_at, s.is_active,
             su.shelving_unit_id, su.unit_number,
-            mp.module_part_id,
+            mp.module_part_id, mp.part_name,
             m.module_id, m.module_number
      FROM Shelves s
      INNER JOIN Shelving_units su ON s.shelving_unit_id = su.shelving_unit_id
@@ -96,6 +97,7 @@ export async function listShelves(): Promise<BaseItemDto[]> {
       module_id: Number(r.module_id),
       module_number: Number(r.module_number),
       module_part_id: Number(r.module_part_id),
+      part_name: String(r.part_name),
       shelving_unit_id: Number(r.shelving_unit_id),
       unit_number: Number(r.unit_number),
       shelf_number: Number(r.shelf_number),

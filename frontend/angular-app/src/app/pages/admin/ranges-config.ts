@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import {
   LibraryStructureService,
@@ -9,11 +10,12 @@ import {
   ShelfNode as Anaquel,
   StructureRange as CodeRange,
 } from '../../services/library-structure.service';
+import { EditModalComponent, EditableItem } from '../../components/edit-modal/edit-modal.component';
 
 @Component({
   selector: 'app-admin-ranges-config',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, EditModalComponent],
   templateUrl: './ranges-config.html',
   styleUrl: './ranges-config.css',
 })
@@ -23,10 +25,22 @@ export class AdminRangesConfigComponent implements OnInit {
   vista: 'muebles' | 'estantes' | 'anaqueles' = 'muebles';
   cargando = false;
   error?: string;
+  
+  // Modal de edición
+  isEditModalOpen = false;
+  editingItem: EditableItem | null = null;
 
-  constructor(private readonly libraryStructure: LibraryStructureService) {}
+  constructor(
+    private readonly libraryStructure: LibraryStructureService,
+    private readonly cdr: ChangeDetectorRef,
+    private readonly router: Router,
+  ) {}
 
   async ngOnInit(): Promise<void> {
+    await this.loadData();
+  }
+
+  async loadData(): Promise<void> {
     this.cargando = true;
     try {
       const response = await firstValueFrom(this.libraryStructure.load());
@@ -39,11 +53,15 @@ export class AdminRangesConfigComponent implements OnInit {
       }));
       this.seleccionado = {};
       this.vista = 'muebles';
+      // Forzar render en modo zoneless
+      this.cdr.detectChanges();
     } catch (err) {
       console.error('[admin-ranges-config] Error al cargar datos:', err);
       this.error = 'No se pudieron obtener los rangos. Intenta más tarde.';
     } finally {
       this.cargando = false;
+      // Asegurar refresco al terminar la carga
+      this.cdr.detectChanges();
     }
   }
 
@@ -93,5 +111,66 @@ export class AdminRangesConfigComponent implements OnInit {
 
   valido(code: string) {
     return /^[A-Za-z]{1,2}\d{2,4}$/.test(code);
+  }
+
+  // Métodos para edición
+  editMueble(mueble: Mueble) {
+    // TODO: Obtener module_number del meta cuando esté disponible
+    this.editingItem = {
+      type: 'module',
+      id: mueble.id,
+      nombre: mueble.nombre,
+      numero: 1, // TODO: Obtener del meta cuando esté disponible
+      rango: {
+        inicio: mueble.rango.inicio,
+        fin: mueble.rango.fin
+      }
+    };
+    this.isEditModalOpen = true;
+  }
+
+  editEstante(estante: Estante) {
+    // TODO: Obtener unit_number del meta cuando esté disponible
+    this.editingItem = {
+      type: 'shelving-unit',
+      id: estante.id,
+      nombre: estante.nombre,
+      numero: 1, // TODO: Obtener del meta cuando esté disponible
+      rango: {
+        inicio: estante.rango.inicio,
+        fin: estante.rango.fin
+      }
+    };
+    this.isEditModalOpen = true;
+  }
+
+  editAnaquel(anaquel: Anaquel) {
+    // TODO: Obtener shelf_number del meta cuando esté disponible
+    this.editingItem = {
+      type: 'shelf',
+      id: anaquel.id,
+      nombre: anaquel.nombre,
+      numero: 1, // TODO: Obtener del meta cuando esté disponible
+      rango: {
+        inicio: anaquel.rango.inicio,
+        fin: anaquel.rango.fin
+      }
+    };
+    this.isEditModalOpen = true;
+  }
+
+  onEditModalClosed() {
+    this.isEditModalOpen = false;
+    this.editingItem = null;
+  }
+
+  async onEditModalSaved() {
+    this.isEditModalOpen = false;
+    this.editingItem = null;
+    await this.loadData();
+  }
+
+  configurarMueble(mueble: Mueble) {
+    this.router.navigate(['/admin/furniture-config', mueble.id]);
   }
 }

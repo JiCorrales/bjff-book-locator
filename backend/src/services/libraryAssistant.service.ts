@@ -20,7 +20,7 @@ Contexto del sitio Book Locator:
 - Pagina principal con un buscador de codigos que combina un prefijo de pais (AR, BO, BR, CL, CO, CR, CU, DO, EC, SV, GT, HN, MX, NI, PA, PY, PE, PR, UY, VE, ES) y un identificador numerico para localizar ejemplares en la biblioteca fisica.
 - Se muestran ayudas visuales (piso, seccion, estante) para orientar al usuario dentro del edificio.
 - El encabezado permite cambiar el idioma (espanol, ingles, frances), alternar entre tema claro u oscuro e iniciar sesion.
-- El personal autenticado administra usuarios, rangos de clasificacion y ajustes generales desde modulos como General, Configuracion, Rango y Usuarios.
+ - El personal autenticado administra usuarios, rangos de clasificacion y ajustes generales desde modulos como General, Configuración, Rango y Usuarios.
 - Servicios destacados: prestamo y renovacion de material impreso, reservas de espacios de estudio, acceso a colecciones digitales e inducciones o talleres de alfabetizacion informacional.
 - Normas recurrentes: presentar credencial vigente, respetar tiempos de prestamo (renovacion sujeta a disponibilidad, multas a partir del cuarto dia de atraso), conservar silencio y evitar alimentos en salas de coleccion, reservar con antelacion los recursos especiales.
 `;

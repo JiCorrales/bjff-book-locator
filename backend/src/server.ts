@@ -1,10 +1,15 @@
-import express, { NextFunction, Request, Response } from 'express';
+import express, { Request, Response } from 'express';
 import cors, { CorsOptions } from 'cors';
+import swaggerUi from 'swagger-ui-express';
 import chatbotRouter from './routes/chatbot';
+import authRouter from './routes/auth';
 import modulesRouter from './routes/modules';
 import shelvingUnitsRouter from './routes/shelving-units';
 import shelvesRouter from './routes/shelves';
+import usersRouter from './routes/users';
 import { env } from './config/env';
+import { openApiDocument } from './docs/openapi';
+import { errorHandler, notFoundHandler } from './middleware/errorHandler';
 
 const app = express();
 
@@ -29,33 +34,16 @@ app.get('/api/health', (_req: Request, res: Response) => {
   res.json({ status: 'ok' });
 });
 
+app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(openApiDocument));
+app.use('/api/auth', authRouter);
 app.use('/api/chatbot', chatbotRouter);
 app.use('/api/modules', modulesRouter);
 app.use('/api/shelving-units', shelvingUnitsRouter);
 app.use('/api/shelves', shelvesRouter);
+app.use('/api/users', usersRouter);
 
-app.use((_req: Request, res: Response) => {
-  res.status(404).json({ message: 'Recurso no encontrado.' });
-});
-
-app.use(
-  (
-    error: unknown,
-    _req: Request,
-    res: Response,
-    _next: NextFunction,
-  ) => {
-    if (error instanceof Error) {
-      console.error('[chatbot] Error no controlado:', error.message);
-    } else {
-      console.error('[chatbot] Error no controlado:', error);
-    }
-
-    res.status(500).json({
-      message: 'Ocurrio un error inesperado. Intenta nuevamente mas tarde.',
-    });
-  },
-);
+app.use(notFoundHandler);
+app.use(errorHandler);
 
 const port = env.PORT;
 

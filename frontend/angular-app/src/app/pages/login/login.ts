@@ -14,12 +14,12 @@ import { Subscription } from 'rxjs';
   styleUrl: './login.css'
 })
 export class LoginComponent implements OnInit, OnDestroy {
-  username = '';
+  email = '';
   password = '';
   error = '';
   loading = false;
-  enableHint = 'Ingresa usuario y contraseAï¿½a vAï¿½lidos para habilitar el botA3n';
-  private usernamePattern = /^[A-Za-z0-9._-]+$/;
+  enableHint = 'Ingresa correo y contraseña válidos para habilitar el botón';
+  private emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   private criteriaMet = false;
   currentTheme: ThemeName = 'dark';
   private themeSubscription?: Subscription;
@@ -37,10 +37,8 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.currentTheme = this.themeService.theme;
-    console.debug('[LoginComponent] Initial theme detected:', this.currentTheme);
     this.themeSubscription = this.themeService.theme$.subscribe((theme) => {
       this.currentTheme = theme;
-      console.debug('[LoginComponent] Theme change received:', theme);
     });
   }
 
@@ -48,46 +46,46 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.themeSubscription?.unsubscribe();
   }
 
-  onFieldChange(field: 'username' | 'password', value: string) {
-    // Normaliza espacios
-    if (field === 'username') this.username = value;
+  onFieldChange(field: 'email' | 'password', value: string) {
+    if (field === 'email') this.email = value;
     if (field === 'password') this.password = value;
     this.updateEnableState();
   }
 
   private updateEnableState() {
-    const u = this.username.trim();
-    const p = this.password.trim();
+    const mail = this.email.trim();
+    const pass = this.password.trim();
 
-    const usernameHasChar = u.length >= 1;
-    const usernameFormatOk = this.usernamePattern.test(u);
-    const passwordHasChar = p.length >= 1;
-    const passwordMinLenOk = p.length >= 6; // requisitos bAï¿½sicos del formulario
+    const emailValid = this.emailPattern.test(mail);
+    const passwordMinLenOk = pass.length >= 6;
 
-    this.criteriaMet = usernameHasChar && usernameFormatOk && passwordHasChar && passwordMinLenOk;
+    this.criteriaMet = emailValid && passwordMinLenOk;
 
-    if (!usernameHasChar) {
-      this.enableHint = 'Escribe tu usuario para continuar';
-    } else if (!usernameFormatOk) {
-      this.enableHint = 'El usuario solo puede contener letras, nAï¿½meros, . _ -';
-    } else if (!passwordHasChar) {
-      this.enableHint = 'Escribe tu contraseAï¿½a para continuar';
+    if (!mail) {
+      this.enableHint = 'Escribe tu correo para continuar';
+    } else if (!emailValid) {
+      this.enableHint = 'El correo electrónico no tiene un formato válido';
+    } else if (!pass) {
+      this.enableHint = 'Escribe tu contraseña para continuar';
     } else if (!passwordMinLenOk) {
-      this.enableHint = 'La contraseAï¿½a debe tener al menos 6 caracteres';
+      this.enableHint = 'La contraseña debe tener al menos 6 caracteres';
     } else {
-      this.enableHint = 'Listo: el botA3n se habilitarAï¿½ automAï¿½ticamente';
+      this.enableHint = 'Listo: el botón se habilitará automáticamente';
     }
   }
 
   async submit() {
     this.error = '';
     this.loading = true;
-    const ok = await this.auth.login(this.username.trim(), this.password);
+
+    const result = await this.auth.login(this.email.trim(), this.password);
     this.loading = false;
-    if (!ok) {
-      this.error = 'Credenciales invAï¿½lidas o rol no permitido';
+
+    if (!result.ok) {
+      this.error = result.message ?? 'Credenciales inválidas';
       return;
     }
+
     const redirect = this.route.snapshot.queryParamMap.get('redirect');
     this.router.navigate([redirect || '/admin']);
   }

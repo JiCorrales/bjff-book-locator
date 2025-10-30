@@ -19,6 +19,10 @@ export const env = Object.freeze({
   NODE_ENV: (process.env.NODE_ENV || 'development').trim(),
   PORT: parseNumber(process.env.PORT, 3000),
   CLIENT_ORIGINS: parseOrigins(process.env.CLIENT_ORIGINS || process.env.CLIENT_ORIGIN),
+  ADMIN_API_KEY: (process.env.ADMIN_API_KEY || '').trim(),
+  ASSISTANT_API_KEY: (process.env.ASSISTANT_API_KEY || '').trim(),
+  AUTH_JWT_SECRET: (process.env.AUTH_JWT_SECRET || '').trim(),
+  MASTER_API_KEY: (process.env.MASTER_API_KEY || '').trim(),
 
   DB_HOST: (process.env.DB_HOST || '127.0.0.1').trim(),
   DB_PORT: Number(process.env.DB_PORT || 3307),
@@ -32,7 +36,7 @@ export const env = Object.freeze({
   OPENAI_MODEL: (process.env.OPENAI_MODEL || 'gpt-4.1-mini').trim(),
   OPENAI_TEMPERATURE: parseNumber(process.env.OPENAI_TEMPERATURE, 0.3),
   OPENAI_MAX_OUTPUT_TOKENS: parseNumber(process.env.OPENAI_MAX_OUTPUT_TOKENS, 700),
-  CHATBOT_ASSISTANT_NAME: (process.env.CHATBOT_ASSISTANT_NAME || 'Lía').trim(),
+  CHATBOT_ASSISTANT_NAME: (process.env.CHATBOT_ASSISTANT_NAME || 'Lia').trim(),
   CHATBOT_HANDOFF_CONTACT:
     (process.env.CHATBOT_HANDOFF_CONTACT || 'biblioteca@instituto.edu').trim(),
 });
