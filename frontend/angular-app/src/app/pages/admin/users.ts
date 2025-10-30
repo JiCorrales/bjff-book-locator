@@ -1,4 +1,4 @@
-﻿import { Component, OnInit } from '@angular/core';
+﻿import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   FormsModule,
@@ -32,7 +32,12 @@ export class AdminUsersComponent implements OnInit {
   searchControl!: FormControl;
   roleOptions: UserRole[] = [];
 
-  constructor(private readonly fb: FormBuilder, private readonly usersService: UserManagementService, private readonly auth: AuthService) {
+  constructor(
+    private readonly fb: FormBuilder,
+    private readonly usersService: UserManagementService,
+    private readonly auth: AuthService,
+    private readonly cdr: ChangeDetectorRef
+  ) {
     this.searchControl = new FormControl('');
 
     const currentRole = this.auth.getRole();
@@ -116,10 +121,12 @@ export class AdminUsersComponent implements OnInit {
       next: (items) => {
         this.users = items;
         this.isLoading = false;
+        this.cdr.detectChanges(); // Force change detection
       },
       error: () => {
         this.isLoading = false;
         this.loadError = 'No se pudieron cargar los usuarios.';
+        this.cdr.detectChanges();
       },
     });
   }
@@ -153,10 +160,12 @@ export class AdminUsersComponent implements OnInit {
             this.users = [user, ...this.users];
             this.resetForm();
             this.isSubmitting = false;
+            this.cdr.detectChanges();
           },
           error: (err) => {
             this.isSubmitting = false;
             this.loadError = err?.error?.error?.message || 'No fue posible crear el usuario.';
+            this.cdr.detectChanges();
           },
         });
     } else if (this.selectedUser) {
@@ -172,10 +181,12 @@ export class AdminUsersComponent implements OnInit {
           this.users = this.users.map((item) => (item.id === user.id ? user : item));
           this.resetForm();
           this.isSubmitting = false;
+          this.cdr.detectChanges();
         },
         error: (err) => {
           this.isSubmitting = false;
           this.loadError = err?.error?.error?.message || 'No fue posible actualizar el usuario.';
+          this.cdr.detectChanges();
         },
       });
     }
@@ -210,9 +221,11 @@ export class AdminUsersComponent implements OnInit {
     this.usersService.remove(user.id).subscribe({
       next: () => {
         this.users = this.users.filter((item) => item.id !== user.id);
+        this.cdr.detectChanges();
       },
       error: (err) => {
         this.loadError = err?.error?.error?.message || 'No fue posible eliminar el usuario.';
+        this.cdr.detectChanges();
       },
     });
   }
