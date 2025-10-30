@@ -1,6 +1,36 @@
 <main class="admin-page">
-  <section class="card">
-    <h1>Panel de administración</h1>
-    <p>Acceso permitido a administradores y asistentes.</p>
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="avatar" aria-hidden="true"></div>
+      <div class="name">Company</div>
+    </div>
+
+    <nav class="menu">
+      
+      <button class="menu-item collapsible" (click)="toggle('users')">
+        <span class="icon" aria-hidden="true">👥</span>
+        <span>Users</span>
+        <span class="carret" aria-hidden="true">▾</span>
+      </button>
+      <div class="submenu" [class.open]="menuOpen.users">
+        <a routerLink="users" routerLinkActive="active" class="menu-item sub">Users</a>
+        <a routerLink="users;filter=inactive" class="menu-item sub">Inactive</a>
+      </div>
+      <button class="menu-item collapsible" (click)="toggle('ranges')">
+        <span class="icon" aria-hidden="true">📚</span>
+        <span>Rangos</span>
+        <span class="carret" aria-hidden="true">▾</span>
+      </button>
+      <div class="submenu" [class.open]="menuOpen.ranges">
+        <a routerLink="ranges" routerLinkActive="active" class="menu-item sub">Visualización</a>
+        <a routerLink="ranges-config" routerLinkActive="active" class="menu-item sub">Configuración</a>
+      </div>
+    </nav>
+
+    
+  </aside>
+
+  <section class="content">
+    <router-outlet></router-outlet>
   </section>
 </main>

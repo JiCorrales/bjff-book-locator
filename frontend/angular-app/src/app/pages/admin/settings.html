@@ -1,0 +1,16 @@
+<div class="settings-page">
+  <header class="page-header"><h1>Settings</h1></header>
+  <div class="settings-layout">
+    <aside class="settings-nav">
+      <div class="group" *ngFor="let g of groups; let i = index">
+        <button class="group-toggle" (click)="toggle(i)"><span class="icon">{{ g.icon }}</span> {{ g.label }} <span class="carret">▾</span></button>
+        <ul class="group-items" [class.open]="g.open">
+          <li *ngFor="let it of g.items"><a href="#" class="nav-link">{{ it }}</a></li>
+        </ul>
+      </div>
+    </aside>
+    <section class="settings-content">
+      <div class="empty">Espacio de contenido preparado para desarrollo posterior.</div>
+    </section>
+  </div>
+</div>

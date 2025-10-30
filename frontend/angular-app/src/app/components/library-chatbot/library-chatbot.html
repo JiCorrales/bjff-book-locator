@@ -1,0 +1,170 @@
+<div class="assistant-widget" [class.is-open]="isOpen">
+  <button
+    type="button"
+    class="assistant-toggle"
+    (click)="togglePanel()"
+    [attr.aria-expanded]="isOpen"
+  >
+    <span class="assistant-toggle-avatar">{{ assistant.avatarGlyph }}</span>
+    <span class="assistant-toggle-text">Hablar con {{ assistant.name }}</span>
+  </button>
+
+  <section class="assistant-panel" *ngIf="isOpen">
+    <header class="assistant-header">
+      <div class="assistant-identity">
+        <span class="assistant-avatar">{{ assistant.avatarGlyph }}</span>
+        <div>
+          <p class="assistant-name">{{ assistant.name }}</p>
+          <p class="assistant-role">{{ assistant.role }}</p>
+        </div>
+      </div>
+      <div class="assistant-actions">
+        <button
+          type="button"
+          class="assistant-action"
+          (click)="resetConversation()"
+          [disabled]="isBusy()"
+        >
+          Reiniciar
+        </button>
+        <button type="button" class="assistant-action" (click)="closePanel()" aria-label="Cerrar asistente">
+          Cerrar
+        </button>
+      </div>
+    </header>
+
+    <div class="assistant-content">
+      <section class="assistant-slider" aria-labelledby="assistant-detail-label">
+        <div class="assistant-slider-header">
+          <label id="assistant-detail-label" for="assistant-detail-range">
+            Nivel de detalle
+          </label>
+          <span class="assistant-slider-value">{{ detailLevelLabel() }}</span>
+        </div>
+        <input
+          type="range"
+          id="assistant-detail-range"
+          min="0"
+          max="100"
+          step="10"
+          [value]="detailLevel()"
+          (input)="handleDetailLevelInput($event)"
+          (change)="handleDetailLevelInput($event)"
+          aria-describedby="assistant-detail-hint"
+          [attr.aria-valuetext]="detailLevelLabel()"
+        >
+        <div class="assistant-slider-scale" aria-hidden="true">
+          <span
+            *ngFor="let stop of detailStops"
+            [class.is-active]="isSliderStopActive(stop.value)"
+          >
+            {{ stop.label }}
+          </span>
+        </div>
+        <p id="assistant-detail-hint" class="assistant-slider-hint">
+          Ajusta cuan concisas o desarrolladas deseas las respuestas de Lia.
+        </p>
+      </section>
+
+      <div class="assistant-messages">
+        <article
+          *ngFor="let message of messages(); trackBy: trackById"
+          class="assistant-message"
+          [class.is-user]="message.sender === 'user'"
+          [class.is-assistant]="message.sender === 'assistant'"
+          [class.is-pending]="message.pending"
+          [class.is-error]="message.error"
+        >
+          <div class="assistant-message-wrapper">
+            <span
+              class="assistant-message-avatar"
+              *ngIf="message.sender === 'assistant'"
+            >
+              {{ assistant.avatarGlyph }}
+            </span>
+            <div class="assistant-bubble">
+              <ng-container *ngIf="!message.pending; else pendingTemplate">
+                {{ message.content }}
+                <div
+                  class="assistant-feedback"
+                  *ngIf="message.sender === 'assistant' && !message.error && !message.feedbackSent"
+                >
+                  <button type="button" class="assistant-feedback-up" (click)="sendFeedbackUp(message.id)" aria-label="Útil">
+                    👍
+                  </button>
+                  <button type="button" class="assistant-feedback-down" (click)="sendFeedbackDown(message.id)" aria-label="No útil">
+                    👎
+                  </button>
+                </div>
+              </ng-container>
+              <ng-template #pendingTemplate>
+                <div class="assistant-typing">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </div>
+                <span class="assistant-typing-text">{{ message.content }}</span>
+              </ng-template>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <div class="assistant-suggestions" *ngIf="shouldShowSuggestions()">
+        <p class="assistant-suggestions-title">Preguntas sugeridas:</p>
+        <div class="assistant-suggestions-list">
+          <button
+            type="button"
+            *ngFor="let suggestion of suggestions"
+            (click)="applySuggestion(suggestion)"
+          >
+            {{ suggestion }}
+          </button>
+        </div>
+      </div>
+
+      <div class="assistant-error" *ngIf="error()">
+        {{ error() }}
+      </div>
+    </div>
+
+    <form class="assistant-input" (submit)="submitForm($event)">
+      <textarea
+        #messageInput
+        class="assistant-textarea"
+        name="assistantMessage"
+        [(ngModel)]="messageDraft"
+        [disabled]="isBusy()"
+        rows="2"
+        placeholder="Escribe tu mensaje..."
+        (keydown)="handleKeydown($event)"
+        (input)="handleInput()"
+        [class.is-overflow]="isInputOverflow"
+        [attr.aria-invalid]="isInputOverflow"
+        aria-describedby="assistant-input-hint"
+      ></textarea>
+      <div class="assistant-input-hint" id="assistant-input-hint">
+        <span [class.is-warning]="isInputOverflow">
+          {{ isInputOverflow ? 'El contenido excede el area visible. Ajusta el texto o envia el mensaje.' : 'Pulsa Shift+Enter para hacer saltos de linea.' }}
+        </span>
+      </div>
+      <div class="assistant-input-actions">
+        <button
+          type="button"
+          class="assistant-reset"
+          (click)="resetConversation()"
+          [disabled]="isBusy()"
+        >
+          Reiniciar
+        </button>
+        <button
+          type="submit"
+          class="assistant-send"
+          [disabled]="isBusy() || !messageDraft.trim()"
+        >
+          Enviar
+        </button>
+      </div>
+    </form>
+  </section>
+</div>

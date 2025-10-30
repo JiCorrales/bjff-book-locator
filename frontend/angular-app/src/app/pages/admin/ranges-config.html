@@ -1,0 +1,89 @@
+<div class="ranges-config">
+  <header class="page-header">
+    <div class="titles">
+      <h1>{{ titulo }}</h1>
+      <div class="subtitle" *ngIf="subtitulo">{{ subtitulo }}</div>
+    </div>
+    <div class="actions">
+      <button class="btn ghost" (click)="volverArriba()" [disabled]="vista==='muebles'">Volver</button>
+    </div>
+  </header>
+
+  <nav class="boxes">
+    <button class="box" [class.active]="vista==='muebles'" (click)="vista='muebles'">Muebles</button>
+    <button class="box" [class.active]="vista==='estantes'" (click)="seleccionado.mueble ? vista='estantes' : null" [disabled]="!seleccionado.mueble">Estantes</button>
+    <button class="box" [class.active]="vista==='anaqueles'" (click)="seleccionado.estante ? vista='anaqueles' : null" [disabled]="!seleccionado.estante">Anaqueles</button>
+  </nav>
+
+  <!-- Muebles -->
+  <section class="panel" [class.hidden]="vista!=='muebles'">
+    <h2>Muebles</h2>
+    <table class="table">
+      <thead>
+        <tr><th>Mueble</th><th>Código inicial</th><th>Código final</th><th>Estado</th><th>Última actualización</th><th></th></tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let m of data" [class.selected]="seleccionado.mueble===m">
+          <td>{{ m.nombre }}</td>
+          <td><input [(ngModel)]="m.rango.inicio" placeholder="Ej. A100" /></td>
+          <td><input [(ngModel)]="m.rango.fin" placeholder="Ej. A199" /></td>
+          <td>
+            <select [(ngModel)]="m.rango.estado"><option>Activo</option><option>Inactivo</option></select>
+          </td>
+          <td>{{ m.rango.actualizado }}</td>
+          <td class="actions">
+            <button class="btn" (click)="guardarRango(m.rango)">Guardar</button>
+            <button class="btn view" (click)="seleccionarMueble(m)">Ver estantes</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- Estantes -->
+  <section class="panel" *ngIf="seleccionado.mueble" [class.hidden]="vista!=='estantes'">
+    <h2>Estantes de {{ seleccionado.mueble?.nombre }}</h2>
+    <table class="table">
+      <thead>
+        <tr><th>Estante</th><th>Código inicial</th><th>Código final</th><th>Estado</th><th>Última actualización</th><th></th></tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let e of seleccionado.mueble?.estantes" [class.selected]="seleccionado.estante===e">
+          <td>{{ e.nombre }}</td>
+          <td><input [(ngModel)]="e.rango.inicio" /></td>
+          <td><input [(ngModel)]="e.rango.fin" /></td>
+          <td>
+            <select [(ngModel)]="e.rango.estado"><option>Activo</option><option>Inactivo</option></select>
+          </td>
+          <td>{{ e.rango.actualizado }}</td>
+          <td class="actions">
+            <button class="btn" (click)="guardarRango(e.rango)">Guardar</button>
+            <button class="btn view" (click)="seleccionarEstante(e)">Ver anaqueles</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- Anaqueles -->
+  <section class="panel" *ngIf="seleccionado.estante" [class.hidden]="vista!=='anaqueles'">
+    <h2>Anaqueles de {{ seleccionado.estante?.nombre }}</h2>
+    <table class="table">
+      <thead>
+        <tr><th>Anaquel</th><th>Código inicial</th><th>Código final</th><th>Estado</th><th>Última actualización</th><th></th></tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let a of seleccionado.estante?.anaqueles">
+          <td>{{ a.nombre }}</td>
+          <td><input [(ngModel)]="a.rango.inicio" /></td>
+          <td><input [(ngModel)]="a.rango.fin" /></td>
+          <td>
+            <select [(ngModel)]="a.rango.estado"><option>Activo</option><option>Inactivo</option></select>
+          </td>
+          <td>{{ a.rango.actualizado }}</td>
+          <td><button class="btn" (click)="guardarRango(a.rango)">Guardar</button></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+</div>

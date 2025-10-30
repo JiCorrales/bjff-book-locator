@@ -1,0 +1,91 @@
+<div class="users-page">
+  <header class="page-header">
+    <h1>Users</h1>
+    <div class="metrics">
+      <div class="metric">
+        <div class="value">{{ users.length }}</div>
+        <div class="label">People</div>
+      </div>
+    </div>
+  </header>
+
+  <section class="create-form">
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <input type="text" placeholder="Name" formControlName="name" />
+      <input type="text" placeholder="Phone" formControlName="phone" />
+      <input type="text" placeholder="Position" formControlName="position" />
+      <select formControlName="status">
+        <option value="Active">Active</option>
+        <option value="Inactive">Inactive</option>
+      </select>
+      <button class="btn" [disabled]="form.invalid">Create</button>
+    </form>
+  </section>
+
+  <section class="table-controls">
+    <input class="search" type="text" placeholder="Search" [(ngModel)]="filter" />
+  </section>
+
+  <section class="table-wrap">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>User</th><th>Status</th><th>Phone number</th><th>Position</th><th>Activity</th><th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let u of filtered">
+          <td>
+            <ng-container *ngIf="editingId!==u.id; else editName">{{ u.name }}</ng-container>
+            <ng-template #editName><input [(ngModel)]="u.name" name="name_{{u.id}}" /></ng-template>
+          </td>
+          <td>
+            <ng-container *ngIf="editingId!==u.id; else editStatus">{{ u.status }}</ng-container>
+            <ng-template #editStatus>
+              <select [(ngModel)]="u.status" name="status_{{u.id}}"><option>Active</option><option>Inactive</option></select>
+            </ng-template>
+          </td>
+          <td>
+            <ng-container *ngIf="editingId!==u.id; else editPhone">{{ u.phone }}</ng-container>
+            <ng-template #editPhone><input [(ngModel)]="u.phone" name="phone_{{u.id}}" /></ng-template>
+          </td>
+          <td>
+            <ng-container *ngIf="editingId!==u.id; else editPosition">{{ u.position }}</ng-container>
+            <ng-template #editPosition><input [(ngModel)]="u.position" name="position_{{u.id}}" /></ng-template>
+          </td>
+          <td>{{ u.activity }}</td>
+          <td class="actions">
+            <button *ngIf="editingId!==u.id" (click)="startEdit(u)" class="link">Edit</button>
+            <button *ngIf="editingId===u.id" (click)="saveEdit(u)" class="link confirm">Save</button>
+            <button *ngIf="editingId===u.id" (click)="cancelEdit()" class="link">Cancel</button>
+            <button (click)="openHistory(u)" class="link">History</button>
+            <button (click)="remove(u)" class="link danger">Delete</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="pagination">
+    <button class="btn" [disabled]="page===1" (click)="page=page-1">Prev</button>
+    <span>Página {{page}} / {{ totalPages }}</span>
+    <button class="btn" [disabled]="page>=totalPages" (click)="page=page+1">Next</button>
+  </section>
+
+  <div class="modal-backdrop" *ngIf="showHistoryFor">
+    <div class="modal">
+      <header class="modal-header">
+        <h3>Historial de {{ showHistoryFor.name }}</h3>
+        <button class="close" (click)="closeHistory()">×</button>
+      </header>
+      <div class="modal-body">
+        <div class="history-item" *ngFor="let h of showHistoryFor?.history | slice:0">
+          <span class="badge" [class.create]="h.action==='create'" [class.update]="h.action==='update'" [class.delete]="h.action==='delete'">{{ h.action }}</span>
+          <span class="time">{{ h.at }}</span>
+          <span class="details">{{ h.details }}</span>
+        </div>
+        <div *ngIf="!showHistoryFor?.history?.length" class="empty">Sin actividades registradas.</div>
+      </div>
+    </div>
+  </div>
+</div>

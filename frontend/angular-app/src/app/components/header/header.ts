@@ -13,7 +13,9 @@ import {
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router'
 import { LoginAccessService } from '../../services/login-access.service';
-
+import { ThemeService, ThemeName } from '../../services/theme.service';
+import { AuthService } from '../../services/auth.service';
+import { toObservable } from '@angular/core/rxjs-interop';
 interface LanguageOption {
   code: LanguageCode;
 }
@@ -38,21 +40,28 @@ export class HeaderComponent implements OnDestroy {
     logo: '',
     about: '',
     theme: '',
-    signIn: ''
+    signIn: '',
+    signOut: ''
   };
   languageLabels: Record<LanguageCode, string> = {
     en: 'English',
     es: 'Spanish',
     fr: 'French'
   };
+  currentTheme: ThemeName = 'dark';
 
   private readonly languageSubscription: Subscription;
+  private readonly themeSubscription: Subscription;
+  private readonly authSubscription: Subscription;
+  isLoggedIn = false;
 
   constructor(
     private host: ElementRef<HTMLElement>,
     private translation: TranslationService,
     private router: Router,
-    private loginAccess: LoginAccessService
+    private loginAccess: LoginAccessService,
+    private themeService: ThemeService,
+    private auth: AuthService
   ) {
     const initial = this.translation.currentLang;
     this.selectedLanguage =
@@ -67,6 +76,16 @@ export class HeaderComponent implements OnDestroy {
         this.refreshText(lang);
       }
     );
+
+    this.currentTheme = this.themeService.theme;
+    this.themeSubscription = this.themeService.theme$.subscribe((theme) => {
+      this.currentTheme = theme;
+    });
+
+    this.isLoggedIn = this.auth.isLoggedIn();
+    this.authSubscription = toObservable(this.auth.state).subscribe(state => {
+      this.isLoggedIn = state.isAuthenticated;
+    });
   }
 
   get selectedLanguageCode(): string {
@@ -88,7 +107,7 @@ export class HeaderComponent implements OnDestroy {
   }
 
   toggleTheme() {
-    document.body.classList.toggle('light-theme');
+    this.themeService.toggleTheme();
   }
 
   @HostListener('document:click', ['$event'])
@@ -105,6 +124,8 @@ export class HeaderComponent implements OnDestroy {
 
   ngOnDestroy() {
     this.languageSubscription.unsubscribe();
+    this.themeSubscription.unsubscribe();
+    this.authSubscription.unsubscribe();
   }
 
   private refreshText(lang: LanguageCode) {
@@ -114,6 +135,7 @@ export class HeaderComponent implements OnDestroy {
         'header.about',
         'header.theme',
         'header.signIn',
+        'header.signOut',
         'language.en',
         'language.es',
         'language.fr'
@@ -125,7 +147,8 @@ export class HeaderComponent implements OnDestroy {
       logo: text['header.logo'],
       about: text['header.about'],
       theme: text['header.theme'],
-      signIn: text['header.signIn']
+      signIn: text['header.signIn'] || 'Sign in',
+      signOut: text['header.signOut'] || 'Sign out'
     };
 
     this.languageLabels = {
@@ -134,8 +157,29 @@ export class HeaderComponent implements OnDestroy {
       fr: text['language.fr']
     };
   }
-  goToLogin() {
-    this.loginAccess.grantAccess();
-    this.router.navigate(['/login']);
+  handleAuthClick() {
+    if (this.isLoggedIn) {
+      this.auth.logout();
+      this.router.navigate(['/']);
+    } else {
+      this.loginAccess.grantAccess();
+      this.router.navigate(['/login']);
+    }
+  }
+
+  // Logout on window/tab close to ensure session cleanup
+  @HostListener('window:beforeunload')
+  onBeforeUnload() {
+    if (this.isLoggedIn) {
+      this.auth.logout();
+    }
+  }
+
+  // Safari/iOS compatibility: pagehide fires on bfcache navigations
+  @HostListener('window:pagehide')
+  onPageHide() {
+    if (this.isLoggedIn) {
+      this.auth.logout();
+    }
   }
 }

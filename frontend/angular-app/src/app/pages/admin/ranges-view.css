@@ -1,0 +1,30 @@
+.ranges-view{display:grid;gap:16px;color:var(--text-color)}
+.page-header{display:flex;align-items:center;justify-content:space-between}
+.page-header .titles h1{font-size:28px;margin:0;letter-spacing:1px}
+.page-header .subtitle{color:#6b7280;margin-top:4px}
+.page-header .actions .btn{padding:8px 12px;border-radius:8px;border:1px solid #c7d2fe;background:transparent;color:var(--text-color);cursor:pointer;transition:all .2s ease}
+.page-header .actions .btn:disabled{opacity:.5;cursor:default}
+.page-header .actions .btn:hover:not(:disabled){background:#eef2ff}
+
+.boxes{display:flex;gap:8px}
+.box{padding:10px 14px;border-radius:10px;border:1px solid var(--border-color);background:var(--surface-muted);color:var(--text-color);cursor:pointer;transition:transform .15s ease, background .15s ease}
+.box.active{background:#eef2ff;transform:translateY(-1px);color:#1f232b}
+.box:disabled{opacity:.5;cursor:default}
+
+.panel{background:var(--surface);border:1px solid var(--border-color);border-radius:8px;padding:12px;color:var(--text-color)}
+.table{width:100%;border-collapse:separate;border-spacing:0}
+.table thead th{background:var(--surface-muted);text-align:left;padding:10px;font-weight:600;color:var(--text-color)}
+.table tbody td{padding:10px;border-top:1px solid var(--border-color)}
+.panel input::placeholder{color:#9ca3af}
+body:not(.light-theme) .panel input::placeholder{color:#cbd5e1}
+.btn{border:1px solid #c7d2fe;border-radius:8px;padding:6px 10px;background:var(--accent-primary);color:#fff;cursor:pointer;transition:background .2s ease,transform .1s ease,box-shadow .1s ease}
+.btn:hover{background:var(--accent-primary-hover)}
+.btn:active{transform:translateY(1px)}
+.btn:focus{outline:2px solid #c7d2fe;outline-offset:2px}
+.btn.view{background:var(--surface);color:var(--text-color);border-color:var(--border-color)}
+.btn.view:hover{background:var(--surface-muted)}
+.btn.view:active{transform:translateY(1px)}
+.btn.view:focus{outline:2px solid #c7d2fe;outline-offset:2px}
+.hidden{display:none}
+.table td.actions{display:flex;gap:12px;align-items:center}
+@media (max-width:800px){.table thead{display:none}.table tr{display:grid;grid-template-columns:1fr}.table td{border-top:none;border-bottom:1px solid var(--border-color)}}
