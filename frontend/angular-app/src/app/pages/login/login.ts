@@ -18,7 +18,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   password = '';
   error = '';
   loading = false;
-  enableHint = 'Ingresa correo y contraseÒa v·lidos para habilitar el botÛn';
+  enableHint = 'Ingresa correo y contrase√±a v√°lidos para habilitar el bot√≥n';
   private emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   private criteriaMet = false;
   currentTheme: ThemeName = 'dark';
@@ -64,14 +64,12 @@ export class LoginComponent implements OnInit, OnDestroy {
     if (!mail) {
       this.enableHint = 'Escribe tu correo para continuar';
     } else if (!emailValid) {
-      this.enableHint = 'El correo electrÛnico no tiene un formato v·lido';
+      this.enableHint = 'El correo electr√≥nico no tiene un formato v√°lido';
     } else if (!pass) {
-      this.enableHint = 'Escribe tu contraseÒa para continuar';
+      this.enableHint = 'Escribe tu contrase√±a para continuar';
     } else if (!passwordMinLenOk) {
-      this.enableHint = 'La contraseÒa debe tener al menos 6 caracteres';
-    } else {
-      this.enableHint = 'Listo: el botÛn se habilitar· autom·ticamente';
-    }
+      this.enableHint = 'La contrase√±a debe tener al menos 6 caracteres';
+    } 
   }
 
   async submit() {
@@ -82,7 +80,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.loading = false;
 
     if (!result.ok) {
-      this.error = result.message ?? 'Credenciales inv·lidas';
+      this.error = result.message ?? 'Credenciales inv√°lidas';
       return;
     }
 

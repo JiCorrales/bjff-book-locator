@@ -48,8 +48,8 @@ export interface LibraryStats {
   providedIn: 'root'
 })
 export class BookLocatorService {
-  private readonly API_BASE_URL = 'http://localhost:3000/api';
-  private readonly IMAGE_BASE_URL = 'http://localhost:3000/images';
+  private readonly API_BASE_URL = '/api';
+  private readonly IMAGE_BASE_URL = '/images';
 
   constructor(private http: HttpClient) {}
 

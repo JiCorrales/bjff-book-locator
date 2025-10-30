@@ -75,7 +75,7 @@ export class AuthService {
       return { ok: true };
     } catch (error: any) {
       const message: string =
-        error?.error?.error?.message || 'Credenciales inv�lidas. Intenta nuevamente.';
+        error?.error?.error?.message || 'Credenciales inválidas. Intenta nuevamente.';
       return { ok: false, message };
     }
   }

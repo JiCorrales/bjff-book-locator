@@ -42,6 +42,16 @@ Instrucciones clave:
 
 const defaultSystemPrompt = buildSystemPrompt();
 
+const MAX_HISTORY_MESSAGES = 20;
+const MAX_MESSAGE_LENGTH = 2000;
+const ASSISTANT_TIMEOUT_MS = Number(process.env.CHATBOT_ASSISTANT_TIMEOUT_MS ?? '20000');
+const OPENAI_REQUEST_TIMEOUT_MS = Math.max(1000, ASSISTANT_TIMEOUT_MS - 500);
+
+type AssistantInputMessage = {
+  role: 'system' | 'user' | 'assistant';
+  content: string;
+};
+
 export class LibraryAssistantService {
   private readonly client: OpenAI | null;
   private readonly systemPrompt: string;
@@ -62,7 +72,49 @@ export class LibraryAssistantService {
       throw new MissingOpenAIKeyError();
     }
 
-    const sanitized = conversation
+    const sanitized = this.buildInput(conversation);
+
+    const startedAt = Date.now();
+    console.info(`[chatbot] [OpenAI] Solicitud enviada con ${sanitized.length - 1} mensajes de contexto.`);
+
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), OPENAI_REQUEST_TIMEOUT_MS);
+
+    try {
+      const response = await this.client.responses.create(
+        {
+          model: env.OPENAI_MODEL,
+          input: sanitized,
+          temperature: env.OPENAI_TEMPERATURE,
+          max_output_tokens: env.OPENAI_MAX_OUTPUT_TOKENS,
+        },
+        { signal: controller.signal },
+      );
+
+      console.info(`[chatbot] [OpenAI] Respuesta recibida en ${Date.now() - startedAt} ms.`);
+
+      const plainText = (response.output_text ?? '').trim();
+
+      if (!plainText) {
+        throw new Error('La respuesta del modelo llego vacia.');
+      }
+
+      return plainText;
+    } catch (error: any) {
+      if (error?.name === 'AbortError') {
+        throw new Error('Timeout en asistente');
+      }
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw new Error('Error desconocido al consultar OpenAI.');
+    } finally {
+      clearTimeout(timeout);
+    }
+  }
+
+  private buildInput(conversation: ChatMessage[]): AssistantInputMessage[] {
+    const history = conversation
       .filter(
         (message): message is ChatMessage =>
           !!message &&
@@ -70,37 +122,13 @@ export class LibraryAssistantService {
           typeof message.content === 'string' &&
           message.content.trim().length > 0,
       )
-      .map((message) => ({
+      .map<AssistantInputMessage>((message) => ({
         role: message.role,
-        content: message.content.trim().slice(0, 2000),
+        content: message.content.trim().slice(0, MAX_MESSAGE_LENGTH),
       }))
-      .slice(-20);
+      .slice(-MAX_HISTORY_MESSAGES);
 
-    const startedAt = Date.now();
-    console.info(`[chatbot] [OpenAI] Solicitud enviada con ${sanitized.length} mensajes.`);
-
-    const response = await this.client.responses.create({
-      model: env.OPENAI_MODEL,
-      input: [
-        { role: 'system', content: this.systemPrompt },
-        ...sanitized.map((message) => ({
-          role: message.role,
-          content: message.content,
-        })),
-      ],
-      temperature: env.OPENAI_TEMPERATURE,
-      max_output_tokens: env.OPENAI_MAX_OUTPUT_TOKENS,
-    });
-
-    console.info(`[chatbot] [OpenAI] Respuesta recibida en ${Date.now() - startedAt} ms.`);
-
-    const plainText = (response.output_text ?? '').trim();
-
-    if (plainText.length === 0) {
-      throw new Error('La respuesta del modelo llego vacia.');
-    }
-
-    return plainText;
+    return [{ role: 'system', content: this.systemPrompt }, ...history];
   }
 }
 
