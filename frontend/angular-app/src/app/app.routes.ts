@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { BookSearchComponent } from './components/book-search/book-search';
+import { AboutUsComponent } from './components/about-us/about-us';
 import { LoginComponent } from './pages/login/login';
 import { AdminPage } from './pages/admin/admin';
 import { AdminUsersComponent } from './pages/admin/users';
@@ -10,6 +11,7 @@ import { loginAccessGuard } from './guards/login-access.guard';
 
 export const routes: Routes = [
   { path: '', component: BookSearchComponent },
+  { path: 'about', component: AboutUsComponent },
   { path: 'login', component: LoginComponent, canActivate: [loginAccessGuard] },
   { path: 'admin', component: AdminPage, canActivate: [authGuard], data: { roles: ['admin', 'assistant'] },
     children: [

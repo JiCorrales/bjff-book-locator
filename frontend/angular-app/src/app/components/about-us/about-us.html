@@ -1,0 +1,184 @@
+<div class="about-us-page">
+  <button class="back-button" routerLink="/">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M19 12H5M12 19l-7-7 7-7"/>
+    </svg>
+    Volver
+  </button>
+
+  <div class="about-us-header">
+    <h1 class="about-us-main-title">📚 BJFF Book Locator</h1>
+    <p class="about-us-subtitle">Sistema de Localización de Libros</p>
+  </div>
+
+  <div class="about-us-content">
+    <div class="about-us-card">
+      <h2>Acerca del Proyecto</h2>
+      <p>Sistema de localización de libros desarrollado para modernizar los servicios de la <strong>Biblioteca José Figueres Ferrer</strong> del <strong>Instituto Tecnológico de Costa Rica</strong>.</p>
+      <p>Este sistema permite consultar la ubicación física de libros mediante códigos de clasificación Dewey y LATAM, mostrando visualmente el módulo, unidad y anaquel exacto donde se encuentra cada ejemplar.</p>
+    </div>
+
+    <div class="about-us-card">
+      <h2>Información Académica</h2>
+      <div class="info-grid">
+        <div class="info-item">
+          <strong>Universidad:</strong>
+          <span>Instituto Tecnológico de Costa Rica</span>
+        </div>
+        <div class="info-item">
+          <strong>Curso:</strong>
+          <span>Requerimientos de Software</span>
+        </div>
+        <div class="info-item">
+          <strong>Profesor:</strong>
+          <span>Mario Chacón Rivas</span>
+        </div>
+        <div class="info-item">
+          <strong>Biblioteca:</strong>
+          <span>José Figueres Ferrer (TEC)</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="about-us-card">
+      <h2>Equipo de Desarrollo</h2>
+      <div class="developers-grid">
+        <div class="developer-card">
+          <div class="developer-avatar">AB</div>
+          <h3>Alexander Bonilla</h3>
+          <p class="developer-role">Desarrollador Backend & Frontend</p>
+          <a href="mailto:alebonilla@estudiantec.com" class="developer-email">
+            📧 alebonilla@estudiantec.com
+          </a>
+        </div>
+        <div class="developer-card">
+          <div class="developer-avatar">IC</div>
+          <h3>Isaac Corrales</h3>
+          <p class="developer-role">Desarrollador Backend & Frontend</p>
+          <a href="mailto:jocorrales@estudiantec.com" class="developer-email">
+            📧 jocorrales@estudiantec.com
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="about-us-card">
+      <h2>🔧 Stack Tecnológico</h2>
+      <div class="tech-grid">
+        <div class="tech-item">
+          <div class="tech-icon">⚡</div>
+          <div class="tech-details">
+            <h4>Frontend</h4>
+            <p>Angular 20, TypeScript, CSS3</p>
+          </div>
+        </div>
+        <div class="tech-item">
+          <div class="tech-icon">🚀</div>
+          <div class="tech-details">
+            <h4>Backend</h4>
+            <p>Node.js, Express, TypeScript</p>
+          </div>
+        </div>
+        <div class="tech-item">
+          <div class="tech-icon">💾</div>
+          <div class="tech-details">
+            <h4>Base de Datos</h4>
+            <p>MySQL 8.0+</p>
+          </div>
+        </div>
+        <div class="tech-item">
+          <div class="tech-icon">🔗</div>
+          <div class="tech-details">
+            <h4>API</h4>
+            <p>REST API, CORS habilitado</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="about-us-card">
+      <h2>✨ Características Principales</h2>
+      <ul class="features-list">
+        <li>
+          <span class="feature-icon">🔍</span>
+          <div class="feature-content">
+            <strong>Búsqueda</strong>
+            <p>Soporte para códigos de clasificación Dewey</p>
+          </div>
+        </li>
+        <li>
+          <span class="feature-icon">📍</span>
+          <div class="feature-content">
+            <strong>Localización Visual</strong>
+            <p>Imágenes de anaqueles resaltados con ubicación relativa</p>
+          </div>
+        </li>
+        <li>
+          <span class="feature-icon">🧮</span>
+          <div class="feature-content">
+            <strong>Parser</strong>
+            <p>Generación de claves comparables de 22 caracteres para búsqueda eficiente</p>
+          </div>
+        </li>
+        <li>
+          <span class="feature-icon">💾</span>
+          <div class="feature-content">
+            <strong>Base de Datos de Prueba</strong>
+            <p>160 estantes mapeados con rangos de clasificación</p>
+          </div>
+        </li>
+        <li>
+          <span class="feature-icon">🌐</span>
+          <div class="feature-content">
+            <strong>Interfaz Multiidioma</strong>
+            <p>Soporte para Español, Inglés y Francés</p>
+          </div>
+        </li>
+        <li>
+          <span class="feature-icon">🎨</span>
+          <div class="feature-content">
+            <strong>Temas Personalizables</strong>
+            <p>Modo claro y oscuro adaptativos</p>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="about-us-card">
+      <h2>🏗️ Arquitectura del Sistema</h2>
+      <div class="architecture-diagram">
+        <div class="arch-layer">
+          <div class="arch-box frontend">
+            <h4>Frontend</h4>
+            <p>Angular 20</p>
+            <small></small>
+          </div>
+        </div>
+        <div class="arch-arrow">↓ HTTP REST API ↓</div>
+        <div class="arch-layer">
+          <div class="arch-box backend">
+            <h4>Backend</h4>
+            <p>Node.js + Express</p>
+            <small></small>
+          </div>
+        </div>
+        <div class="arch-arrow">↓ MySQL2 ↓</div>
+        <div class="arch-layer">
+          <div class="arch-box database">
+            <h4>Base de Datos</h4>
+            <p>MySQL</p>
+            <small>bjff_book_locator</small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="about-us-card footer-card">
+      <p class="footer-text">
+        <strong>BJFF Book Locator</strong> © 2025<br>
+        Desarrollado para el Instituto Tecnológico de Costa Rica<br>
+        Biblioteca José Figueres Ferrer
+      </p>
+    </div>
+  </div>
+</div>
