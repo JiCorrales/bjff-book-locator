@@ -1,0 +1,43 @@
+
+1. instale las dependencias bro
+
+npm install
+
+2. haga el .env para conectarse a su base
+
+3. Actualice su database con lo que hay en migrations
+
+4. Por si no ha calculado los keys
+
+npm run db:update-keys
+
+5. Ejecute esto para guardar las rutas de las imagenes en la base
+
+npm run db:update-image-paths
+
+6. Server backend
+
+tire
+
+npm run dev
+
+o
+
+npm run build
+npm run start:prod
+```
+se usa el puerto 3000 por aquello***
+
+7. Busque este libro
+
+$body = @{ code = "510.5 A500a" } | ConvertTo-Json
+Invoke-RestMethod -Uri "http://localhost:3000/api/books/search" `
+  -Method Post `
+  -ContentType "application/json" `
+  -Body $body
+
+deberia devolverle un JSON con toda la data, deberia
+ver la ruta de la imagen asociada (eso esta en la raiz del proyecto)
+
+
+Tambien esta TEST_API.ps1 en backend que prueba varios códigos

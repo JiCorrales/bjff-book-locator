@@ -10,9 +10,8 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
-    "moduleResolution": "bundler",
+    "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
-    "ignoreDeprecations": "5.0",
     "typeRoots": ["./node_modules/@types"]
   },
   "include": ["src/**/*"],
@@ -20,7 +19,7 @@
   "ts-node": {
     "compilerOptions": {
       "module": "commonjs",
-      "moduleResolution": "bundler"
+      "moduleResolution": "node"
     }
   }
 }
