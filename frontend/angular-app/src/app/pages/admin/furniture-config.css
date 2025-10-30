@@ -387,3 +387,55 @@
   outline: 3px solid var(--accent-color);
   outline-offset: 2px;
 }
+
+/* ===== FORM ACTIONS ===== */
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
+
+.save-button {
+  appearance: none;
+  border: none;
+  padding: 0.625rem 1rem;
+  border-radius: 0.5rem;
+  background-color: var(--accent-color);
+  color: var(--btn-text, #fff);
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--transition-fast), opacity var(--transition-fast), background-color var(--transition-fast);
+}
+
+.save-button:hover {
+  transform: translateY(-1px);
+  background-color: var(--accent-color-hover, #5a67d8);
+}
+
+.save-button:active {
+  transform: translateY(0);
+}
+
+.save-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.inline-saving {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* ===== READONLY FIELD ===== */
+.form-input.readonly,
+.form-input[readonly],
+.form-input:disabled {
+  background-color: var(--bg-secondary);
+  color: var(--text-muted);
+  border-color: var(--border-color);
+  cursor: not-allowed;
+}

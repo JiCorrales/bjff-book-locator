@@ -2,8 +2,8 @@
   <!-- Header -->
   <header class="config-header">
     <div class="header-content">
-      <button 
-        class="back-button" 
+      <button
+        class="back-button"
         (click)="goBack()"
         [attr.aria-label]="'Volver a configuración de rangos'"
         type="button">
@@ -12,7 +12,7 @@
         </svg>
         Volver
       </button>
-      
+
       <div class="title-section">
         <h1>Configuración de Mueble</h1>
         <p class="subtitle" *ngIf="formData.nombre">{{ formData.nombre }}</p>
@@ -30,12 +30,12 @@
           </svg>
           {{ saveMessage }}
         </div>
-        
+
         <div class="changes-indicator" *ngIf="hasUnsavedChanges && !isSaving">
           <span class="dot"></span>
           Cambios sin guardar
         </div>
-        
+
         <div class="saving-indicator" *ngIf="isSaving">
           <div class="spinner"></div>
           Guardando...
@@ -54,7 +54,7 @@
   <main class="config-main" *ngIf="!isLoading">
     <div class="form-container">
       <form class="furniture-form" (ngSubmit)="saveChanges()" #furnitureForm="ngForm">
-        
+
         <!-- Nombre del Mueble -->
         <div class="form-group">
           <label for="nombre" class="form-label">
@@ -65,20 +65,21 @@
             type="text"
             id="nombre"
             name="nombre"
-            class="form-input"
+            class="form-input readonly"
             [class.error]="hasFieldError('nombre')"
             [(ngModel)]="formData.nombre"
-            (input)="onFieldChange()"
+            readonly
+            aria-readonly="true"
             required
             minlength="2"
             maxlength="100"
-            placeholder="Ingrese el nombre del mueble"
+            placeholder="Nombre del mueble"
             [attr.aria-describedby]="hasFieldError('nombre') ? 'nombre-error' : null"
             autocomplete="off">
-          
-          <div 
-            id="nombre-error" 
-            class="error-message" 
+
+          <div
+            id="nombre-error"
+            class="error-message"
             *ngIf="hasFieldError('nombre')"
             role="alert"
             aria-live="polite">
@@ -101,14 +102,14 @@
             [(ngModel)]="formData.numero"
             (input)="onFieldChange()"
             required
-            min="1"
+            min="0"
             max="9999"
-            placeholder="1"
+            placeholder="0"
             [attr.aria-describedby]="hasFieldError('numero') ? 'numero-error' : null">
-          
-          <div 
-            id="numero-error" 
-            class="error-message" 
+
+          <div
+            id="numero-error"
+            class="error-message"
             *ngIf="hasFieldError('numero')"
             role="alert"
             aria-live="polite">
@@ -116,7 +117,7 @@
           </div>
         </div>
 
-        <!-- Códigos de Rango -->
+        <!-- Códigos de Rango (sin validaciones de formato) -->
         <div class="form-row">
           <div class="form-group">
             <label for="codigoInicial" class="form-label">
@@ -127,27 +128,11 @@
               id="codigoInicial"
               name="codigoInicial"
               class="form-input"
-              [class.error]="hasFieldError('codigoInicial')"
               [(ngModel)]="formData.codigoInicial"
               (input)="onFieldChange()"
-              pattern="^[A-Za-z]{1,2}\d{2,4}$"
               placeholder="Ej: A100"
               maxlength="6"
-              [attr.aria-describedby]="hasFieldError('codigoInicial') ? 'codigoInicial-error' : 'codigoInicial-help'"
               autocomplete="off">
-            
-            <div id="codigoInicial-help" class="help-text" *ngIf="!hasFieldError('codigoInicial')">
-              Formato: 1-2 letras seguidas de 2-4 números (Ej: A100, BC1234)
-            </div>
-            
-            <div 
-              id="codigoInicial-error" 
-              class="error-message" 
-              *ngIf="hasFieldError('codigoInicial')"
-              role="alert"
-              aria-live="polite">
-              {{ getFieldError('codigoInicial') }}
-            </div>
           </div>
 
           <div class="form-group">
@@ -159,27 +144,11 @@
               id="codigoFinal"
               name="codigoFinal"
               class="form-input"
-              [class.error]="hasFieldError('codigoFinal')"
               [(ngModel)]="formData.codigoFinal"
               (input)="onFieldChange()"
-              pattern="^[A-Za-z]{1,2}\d{2,4}$"
               placeholder="Ej: A199"
               maxlength="6"
-              [attr.aria-describedby]="hasFieldError('codigoFinal') ? 'codigoFinal-error' : 'codigoFinal-help'"
               autocomplete="off">
-            
-            <div id="codigoFinal-help" class="help-text" *ngIf="!hasFieldError('codigoFinal')">
-              Debe ser mayor al código inicial
-            </div>
-            
-            <div 
-              id="codigoFinal-error" 
-              class="error-message" 
-              *ngIf="hasFieldError('codigoFinal')"
-              role="alert"
-              aria-live="polite">
-              {{ getFieldError('codigoFinal') }}
-            </div>
           </div>
         </div>
 
@@ -200,20 +169,25 @@
             <option value="Activo">Activo</option>
             <option value="Inactivo">Inactivo</option>
           </select>
-          
+
           <div id="estado-help" class="help-text">
             Los muebles inactivos no aparecerán en las búsquedas
           </div>
         </div>
 
-        <!-- Keyboard Shortcut Hint -->
-        <div class="keyboard-hint">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
-            <line x1="8" y1="21" x2="16" y2="21"/>
-            <line x1="12" y1="17" x2="12" y2="21"/>
-          </svg>
-          Presiona <kbd>Ctrl</kbd> + <kbd>S</kbd> para guardar manualmente
+        <!-- Acciones -->
+        <div class="form-actions">
+          <button
+            type="submit"
+            class="save-button"
+            [disabled]="isSaving || !hasUnsavedChanges"
+            aria-label="Guardar cambios del mueble">
+            <span *ngIf="!isSaving">Guardar</span>
+            <span class="inline-saving" *ngIf="isSaving">
+              <span class="spinner" aria-hidden="true"></span>
+              Guardando...
+            </span>
+          </button>
         </div>
 
       </form>

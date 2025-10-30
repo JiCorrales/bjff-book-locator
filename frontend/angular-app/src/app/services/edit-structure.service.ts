@@ -52,14 +52,32 @@ export class EditStructureService {
     });
   }
 
+  setModuleActive(id: number, is_active: boolean): Observable<UpdateResponse> {
+    return this.http.patch<UpdateResponse>(`${this.baseUrl}/modules/items/${id}/active`, { is_active }, {
+      headers: this.buildHeaders(),
+    });
+  }
+
   updateShelvingUnit(id: number, payload: ShelvingUnitUpdatePayload): Observable<UpdateResponse> {
     return this.http.patch<UpdateResponse>(`${this.baseUrl}/shelving-units/items/${id}`, payload, {
       headers: this.buildHeaders(),
     });
   }
 
+  setShelvingUnitActive(id: number, is_active: boolean): Observable<UpdateResponse> {
+    return this.http.patch<UpdateResponse>(`${this.baseUrl}/shelving-units/items/${id}/active`, { is_active }, {
+      headers: this.buildHeaders(),
+    });
+  }
+
   updateShelf(id: number, payload: ShelfUpdatePayload): Observable<UpdateResponse> {
     return this.http.patch<UpdateResponse>(`${this.baseUrl}/shelves/items/${id}`, payload, {
+      headers: this.buildHeaders(),
+    });
+  }
+
+  setShelfActive(id: number, is_active: boolean): Observable<UpdateResponse> {
+    return this.http.patch<UpdateResponse>(`${this.baseUrl}/shelves/items/${id}/active`, { is_active }, {
       headers: this.buildHeaders(),
     });
   }

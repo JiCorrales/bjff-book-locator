@@ -35,13 +35,17 @@
   <div class="alert" *ngIf="!cargando && error">{{ error }}</div>
 
   <ng-container *ngIf="!cargando && !error">
+    <!-- Mensajes de guardado -->
+    <div *ngIf="saveMessage" class="alert" [class.success]="saveMessageType === 'success'" [class.error]="saveMessageType === 'error'">
+      {{ saveMessage }}
+    </div>
     <!-- Muebles -->
     <section class="panel" [class.hidden]="vista !== 'muebles'">
       <h2>Muebles</h2>
       <table class="table">
         <thead>
           <tr>
-            <th>Mueble</th>
+            <th>Número</th>
             <th>Código inicial</th>
             <th>Código final</th>
             <th>Estado</th>
@@ -52,11 +56,11 @@
         </thead>
         <tbody>
           <tr *ngFor="let m of data" [class.selected]="seleccionado.mueble === m">
-            <td>{{ m.nombre }}</td>
-            <td><input [(ngModel)]="m.rango.inicio" placeholder="Ej. A100" /></td>
-            <td><input [(ngModel)]="m.rango.fin" placeholder="Ej. A199" /></td>
+            <td><input type="number" [(ngModel)]="m.numero" [disabled]="!isEditing('module', m.id)" placeholder="Ej. 1" /></td>
+            <td><input [(ngModel)]="m.rango.inicio" [disabled]="!isEditing('module', m.id)" placeholder="Ej. A100" /></td>
+            <td><input [(ngModel)]="m.rango.fin" [disabled]="!isEditing('module', m.id)" placeholder="Ej. A199" /></td>
             <td>
-              <select [(ngModel)]="m.rango.estado">
+              <select [(ngModel)]="m.rango.estado" [disabled]="!isEditing('module', m.id)">
                 <option>Activo</option>
                 <option>Inactivo</option>
               </select>
@@ -64,7 +68,12 @@
             <td>{{ m.rango.actualizado || 'Sin actualizar' }}</td>
             <td class="actions">
               <button class="btn view" (click)="seleccionarMueble(m)">Ver estantes</button>
-              <button class="btn edit" (click)="editMueble(m)">Editar</button>
+              <ng-container *ngIf="!isEditing('module', m.id); else moduleSave">
+                <button class="btn edit" (click)="startEditModule(m)">Editar</button>
+              </ng-container>
+              <ng-template #moduleSave>
+                <button class="btn save" (click)="saveModuleRow(m)">Guardar</button>
+              </ng-template>
             </td>
           </tr>
         </tbody>
@@ -77,7 +86,7 @@
       <table class="table">
         <thead>
           <tr>
-            <th>Estante</th>
+            <th>Número</th>
             <th>Orientación</th>
             <th>Código inicial</th>
             <th>Código final</th>
@@ -88,21 +97,33 @@
         </thead>
         <tbody>
           <tr *ngFor="let e of mueble.estantes" [class.selected]="seleccionado.estante === e">
-            <td>{{ e.nombre }}</td>
+            <td><input type="number" [(ngModel)]="e.numero" [disabled]="!isEditing('shelving-unit', e.id)" placeholder="Ej. 1" /></td>
             <td>{{ e.orientacion }}</td>
-            <td><input [(ngModel)]="e.rango.inicio" /></td>
-            <td><input [(ngModel)]="e.rango.fin" /></td>
+            <td><input [(ngModel)]="e.rango.inicio" [disabled]="!isEditing('shelving-unit', e.id)" /></td>
+            <td><input [(ngModel)]="e.rango.fin" [disabled]="!isEditing('shelving-unit', e.id)" /></td>
             <td>
-              <select [(ngModel)]="e.rango.estado">
-                <option>Activo</option>
-                <option>Inactivo</option>
-              </select>
+              <ng-container *ngIf="!isEditing('shelving-unit', e.id); else unitEditEstado">
+                <select [(ngModel)]="e.rango.estado" (ngModelChange)="onShelvingUnitEstadoChange(e, $event)">
+                  <option>Activo</option>
+                  <option>Inactivo</option>
+                </select>
+              </ng-container>
+              <ng-template #unitEditEstado>
+                <select [(ngModel)]="e.rango.estado">
+                  <option>Activo</option>
+                  <option>Inactivo</option>
+                </select>
+              </ng-template>
             </td>
             <td>{{ e.rango.actualizado || 'Sin actualizar' }}</td>
             <td class="actions">
-              <button class="btn" (click)="guardarRango(e.rango)">Guardar</button>
               <button class="btn view" (click)="seleccionarEstante(e)">Ver anaqueles</button>
-              <button class="btn edit" (click)="editEstante(e)">Editar</button>
+              <ng-container *ngIf="!isEditing('shelving-unit', e.id); else unitSave">
+                <button class="btn edit" (click)="startEditUnit(e)">Editar</button>
+              </ng-container>
+              <ng-template #unitSave>
+                <button class="btn save" (click)="saveUnitRow(e)">Guardar</button>
+              </ng-template>
             </td>
           </tr>
         </tbody>
@@ -115,7 +136,7 @@
       <table class="table">
         <thead>
           <tr>
-            <th>Anaquel</th>
+            <th>Número</th>
             <th>Código inicial</th>
             <th>Código final</th>
             <th>Estado</th>
@@ -126,19 +147,31 @@
         </thead>
         <tbody>
           <tr *ngFor="let a of estante.anaqueles">
-            <td>{{ a.nombre }}</td>
-            <td><input [(ngModel)]="a.rango.inicio" /></td>
-            <td><input [(ngModel)]="a.rango.fin" /></td>
+            <td><input type="number" [(ngModel)]="a.numero" [disabled]="!isEditing('shelf', a.id)" placeholder="Ej. 1" /></td>
+            <td><input [(ngModel)]="a.rango.inicio" [disabled]="!isEditing('shelf', a.id)" /></td>
+            <td><input [(ngModel)]="a.rango.fin" [disabled]="!isEditing('shelf', a.id)" /></td>
             <td>
-              <select [(ngModel)]="a.rango.estado">
-                <option>Activo</option>
-                <option>Inactivo</option>
-              </select>
+              <ng-container *ngIf="!isEditing('shelf', a.id); else shelfEditEstado">
+                <select [(ngModel)]="a.rango.estado" (ngModelChange)="onShelfEstadoChange(a, $event)">
+                  <option>Activo</option>
+                  <option>Inactivo</option>
+                </select>
+              </ng-container>
+              <ng-template #shelfEditEstado>
+                <select [(ngModel)]="a.rango.estado">
+                  <option>Activo</option>
+                  <option>Inactivo</option>
+                </select>
+              </ng-template>
             </td>
             <td>{{ a.rango.actualizado || 'Sin actualizar' }}</td>
             <td class="actions">
-              <button class="btn" (click)="guardarRango(a.rango)">Guardar</button>
-              <button class="btn edit" (click)="editAnaquel(a)">Editar</button>
+              <ng-container *ngIf="!isEditing('shelf', a.id); else shelfSave">
+                <button class="btn edit" (click)="startEditShelf(a)">Editar</button>
+              </ng-container>
+              <ng-template #shelfSave>
+                <button class="btn save" (click)="saveShelfRow(a)">Guardar</button>
+              </ng-template>
             </td>
           </tr>
         </tbody>

@@ -39,20 +39,8 @@ export type EditableItem = {
             />
           </div>
           
-          <div class="form-group" *ngIf="item?.type !== 'shelf'">
+          <div class="form-group">
             <label for="numero">Número:</label>
-            <input 
-              type="number" 
-              id="numero" 
-              name="numero"
-              [(ngModel)]="formData.numero" 
-              min="1"
-              class="form-control"
-            />
-          </div>
-          
-          <div class="form-group" *ngIf="item?.type === 'shelf'">
-            <label for="numero">Número de Anaquel:</label>
             <input 
               type="number" 
               id="numero" 

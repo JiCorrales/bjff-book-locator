@@ -11,6 +11,7 @@ import { env } from '../config/env';
 
 const MAX_MESSAGES = 20;
 const MAX_CONTENT_LENGTH = 2000;
+const ASSISTANT_TIMEOUT_MS = Number(process.env.CHATBOT_ASSISTANT_TIMEOUT_MS ?? '12000');
 
 interface ChatRequestBody {
   conversation?: ChatMessage[];
@@ -59,20 +60,24 @@ const handleConversation =
     }
 
     try {
-      const reply = await assistant.reply(conversation);
+      // Forzar un timeout al asistente remoto para evitar que el frontend alcance su timeout (15s)
+      const assistantReplyPromise = assistant.reply(conversation);
+      const timeoutPromise = new Promise<string>((_, reject) =>
+        setTimeout(() => reject(new Error('Timeout en asistente')), ASSISTANT_TIMEOUT_MS),
+      );
+
+      const reply = await Promise.race([assistantReplyPromise, timeoutPromise]);
 
       return res.json({
         message: { role: 'assistant', content: reply },
       });
     } catch (error) {
-      // Si el asistente remoto no está disponible, intenta respuesta rápida con NLP local
-      if (error instanceof MissingOpenAIKeyError) {
-        try {
-          const reply = await localNlpAssistantService.reply(conversation);
-          return res.json({ message: { role: 'assistant', content: reply } });
-        } catch (fallbackError) {
-          // Continúa a manejo genérico
-        }
+      // Intentar siempre una respuesta rápida con NLP local como fallback
+      try {
+        const reply = await localNlpAssistantService.reply(conversation);
+        return res.json({ message: { role: 'assistant', content: reply } });
+      } catch (fallbackError) {
+        // Si el fallback también falla, registrar y responder con mensaje genérico
       }
 
       if (error instanceof Error) {
