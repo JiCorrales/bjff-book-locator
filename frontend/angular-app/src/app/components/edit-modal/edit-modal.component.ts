@@ -26,16 +26,16 @@ export type EditableItem = {
           <button class="close-btn" (click)="close()">&times;</button>
         </div>
         
-        <form class="modal-body" (ngSubmit)="onSubmit()" #editForm="ngForm">
+        <div class="modal-body">
           <div class="form-group">
             <label for="nombre">Nombre:</label>
             <input 
               type="text" 
               id="nombre" 
               name="nombre"
-              [(ngModel)]="formData.nombre" 
-              required
-              class="form-control"
+              [value]="formData.nombre" 
+              readonly
+              class="form-control readonly"
             />
           </div>
           
@@ -73,7 +73,6 @@ export type EditableItem = {
                 [(ngModel)]="formData.rangeStart" 
                 class="form-control"
                 placeholder="Ej: A001"
-                pattern="^[A-Za-z]{1,2}\\d{2,4}$"
               />
             </div>
             
@@ -86,18 +85,17 @@ export type EditableItem = {
                 [(ngModel)]="formData.rangeEnd" 
                 class="form-control"
                 placeholder="Ej: A999"
-                pattern="^[A-Za-z]{1,2}\\d{2,4}$"
               />
             </div>
           </div>
           
           <div class="modal-footer">
             <button type="button" class="btn secondary" (click)="close()">Cancelar</button>
-            <button type="submit" class="btn primary" [disabled]="!editForm.valid || isLoading">
+            <button type="button" class="btn primary" (click)="onSubmit()" [disabled]="isLoading">
               {{ isLoading ? 'Guardando...' : 'Guardar' }}
             </button>
           </div>
-        </form>
+        </div>
       </div>
     </div>
   `,
@@ -191,6 +189,12 @@ export type EditableItem = {
       box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
     }
     
+    .form-control.readonly {
+      background-color: #f8f9fa;
+      color: #6c757d;
+      cursor: not-allowed;
+    }
+    
     .modal-footer {
       display: flex;
       gap: 0.5rem;
@@ -271,19 +275,7 @@ export class EditModalComponent implements OnInit {
 
   onSubmit() {
     if (this.isLoading) return;
-    // Validaciones mínimas adicionales
-    if (!this.formData.nombre || this.formData.nombre.trim().length < 2) {
-      alert('El nombre es obligatorio y debe tener al menos 2 caracteres');
-      return;
-    }
-    if (this.formData.rangeStart && !this.codeRegex.test(this.formData.rangeStart)) {
-      alert('Código inicio inválido. Use formato letras(1-2) + números(2-4)');
-      return;
-    }
-    if (this.formData.rangeEnd && !this.codeRegex.test(this.formData.rangeEnd)) {
-      alert('Código fin inválido. Use formato letras(1-2) + números(2-4)');
-      return;
-    }
+    
     this.isLoading = true;
     const type = this.item?.type;
     const id = this.item?.id ?? 0;

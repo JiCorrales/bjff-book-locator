@@ -25,7 +25,7 @@ export class AdminRangesConfigComponent implements OnInit {
   vista: 'muebles' | 'estantes' | 'anaqueles' = 'muebles';
   cargando = false;
   error?: string;
-  
+
   // Modal de edición
   isEditModalOpen = false;
   editingItem: EditableItem | null = null;
@@ -113,21 +113,7 @@ export class AdminRangesConfigComponent implements OnInit {
     return /^[A-Za-z]{1,2}\d{2,4}$/.test(code);
   }
 
-  // Métodos para edición
-  editMueble(mueble: Mueble) {
-    // TODO: Obtener module_number del meta cuando esté disponible
-    this.editingItem = {
-      type: 'module',
-      id: mueble.id,
-      nombre: mueble.nombre,
-      numero: 1, // TODO: Obtener del meta cuando esté disponible
-      rango: {
-        inicio: mueble.rango.inicio,
-        fin: mueble.rango.fin
-      }
-    };
-    this.isEditModalOpen = true;
-  }
+
 
   editEstante(estante: Estante) {
     // TODO: Obtener unit_number del meta cuando esté disponible
@@ -170,7 +156,7 @@ export class AdminRangesConfigComponent implements OnInit {
     await this.loadData();
   }
 
-  configurarMueble(mueble: Mueble) {
+  editMueble(mueble: Mueble) {
     this.router.navigate(['/admin/furniture-config', mueble.id]);
   }
 }
