@@ -14,6 +14,7 @@ export interface StructureRange {
 export interface ShelfNode {
   id: number;
   nombre: string;
+  numero: number;
   rango: StructureRange;
 }
 
@@ -21,6 +22,7 @@ export interface ShelvingUnitNode {
   id: number;
   nombre: string;
   orientacion: string;
+  numero: number;
   rango: StructureRange;
   anaqueles: ShelfNode[];
 }
@@ -28,6 +30,7 @@ export interface ShelvingUnitNode {
 export interface ModuleNode {
   id: number;
   nombre: string;
+  numero: number;
   rango: StructureRange;
   estantes: ShelvingUnitNode[];
 }
@@ -72,6 +75,7 @@ export class LibraryStructureService {
     return source.map((m) => ({
       id: Number(m.id),
       nombre: m.nombre,
+      numero: Number(m.meta?.['module_number'] ?? 0),
       rango: this.toRange(m),
       estantes: [],
     }));
@@ -99,6 +103,7 @@ export class LibraryStructureService {
         id: Number(unit.id),
         nombre: unit.nombre,
         orientacion,
+        numero: Number(unit.meta?.['unit_number'] ?? 0),
         rango: this.toRange(unit),
         anaqueles: [],
       };
@@ -121,6 +126,7 @@ export class LibraryStructureService {
       unit.anaqueles.push({
         id: Number(shelf.id),
         nombre: shelf.nombre,
+        numero: Number(shelf.meta?.['shelf_number'] ?? 0),
         rango: this.toRange(shelf),
       });
     }

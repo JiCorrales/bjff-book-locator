@@ -40,7 +40,7 @@ export class FurnitureConfigComponent implements OnInit, OnDestroy {
   // Estado del componente
   formData: FurnitureFormData = {
     id: 0,
-    numero: 1,
+    numero: 0,
     codigoInicial: '',
     codigoFinal: '',
     estado: 'Activo',
@@ -55,8 +55,7 @@ export class FurnitureConfigComponent implements OnInit, OnDestroy {
   saveMessage = '';
   saveMessageType: 'success' | 'error' | '' = '';
 
-  // Patrón para validación de códigos
-  private readonly codePattern = /^[A-Za-z]{1,2}\d{2,4}$/;
+  // Validaciones simplificadas: sin validación de formato de códigos
 
   ngOnInit() {
     this.setupAutoSave();
@@ -128,13 +127,13 @@ export class FurnitureConfigComponent implements OnInit, OnDestroy {
   private loadFormData(furniture: ModuleNode) {
     this.formData = {
       id: furniture.id,
-      numero: 1, // TODO: Obtener del backend cuando esté disponible
+      numero: furniture.numero,
       codigoInicial: furniture.rango.inicio,
       codigoFinal: furniture.rango.fin,
       estado: furniture.rango.estado,
       nombre: furniture.nombre
     };
-    
+
     // Guardar copia para detectar cambios
     this.originalData = { ...this.formData };
     this.hasUnsavedChanges = false;
@@ -144,14 +143,14 @@ export class FurnitureConfigComponent implements OnInit, OnDestroy {
     this.hasUnsavedChanges = this.hasDataChanged();
     this.validateForm();
     this.clearMessage();
-    
+
     // Trigger auto-save
     this.autoSave$.next();
   }
 
   private hasDataChanged(): boolean {
     if (!this.originalData) return false;
-    
+
     return JSON.stringify(this.formData) !== JSON.stringify(this.originalData);
   }
 
@@ -172,38 +171,14 @@ export class FurnitureConfigComponent implements OnInit, OnDestroy {
     }
 
     // Validar número
-    if (this.formData.numero < 1) {
+    if (this.formData.numero < 0) {
       this.validationErrors.push({
         field: 'numero',
         message: 'El número debe ser mayor a 0'
       });
     }
 
-    // Validar código inicial
-    if (this.formData.codigoInicial && !this.codePattern.test(this.formData.codigoInicial)) {
-      this.validationErrors.push({
-        field: 'codigoInicial',
-        message: 'Formato inválido. Use letras(1-2) + números(2-4). Ej: A100'
-      });
-    }
-
-    // Validar código final
-    if (this.formData.codigoFinal && !this.codePattern.test(this.formData.codigoFinal)) {
-      this.validationErrors.push({
-        field: 'codigoFinal',
-        message: 'Formato inválido. Use letras(1-2) + números(2-4). Ej: A199'
-      });
-    }
-
-    // Validar consistencia entre códigos
-    if (this.formData.codigoInicial && this.formData.codigoFinal) {
-      if (this.formData.codigoInicial >= this.formData.codigoFinal) {
-        this.validationErrors.push({
-          field: 'codigoFinal',
-          message: 'El código final debe ser mayor al código inicial'
-        });
-      }
-    }
+    // Sin validaciones de formato ni consistencia para códigos de identificación
 
     return this.validationErrors.length === 0;
   }
@@ -230,21 +205,79 @@ export class FurnitureConfigComponent implements OnInit, OnDestroy {
     this.clearMessage();
 
     try {
-      const payload: ModuleUpdatePayload = {
-        module_name: this.formData.nombre,
-        module_number: this.formData.numero,
-        range_start: this.formData.codigoInicial || undefined,
-        range_end: this.formData.codigoFinal || undefined
-      };
+      const ops: Array<{ type: 'module' | 'active'; promise: Promise<any> }> = [];
 
-      const response = await this.editService.updateModule(this.formData.id, payload).toPromise();
-      
-      if (response?.success) {
+      // Detectar cambios específicos contra originalData para enviar solo lo necesario
+      const payload: ModuleUpdatePayload = {};
+      if (this.originalData) {
+        if (this.formData.nombre !== this.originalData.nombre) {
+          payload.module_name = this.formData.nombre;
+        }
+        if (this.formData.numero !== this.originalData.numero) {
+          payload.module_number = this.formData.numero;
+        }
+        const rangeChanged =
+          this.formData.codigoInicial !== this.originalData.codigoInicial ||
+          this.formData.codigoFinal !== this.originalData.codigoFinal;
+        if (rangeChanged && this.formData.codigoInicial && this.formData.codigoFinal) {
+          payload.range_start = this.formData.codigoInicial;
+          payload.range_end = this.formData.codigoFinal;
+        }
+      } else {
+        // Si no hay originalData, enviar lo que haya (carga inicial)
+        payload.module_name = this.formData.nombre;
+        payload.module_number = this.formData.numero;
+        if (this.formData.codigoInicial && this.formData.codigoFinal) {
+          payload.range_start = this.formData.codigoInicial;
+          payload.range_end = this.formData.codigoFinal;
+        }
+      }
+
+      if (Object.keys(payload).length > 0) {
+        ops.push({ type: 'module', promise: this.editService.updateModule(this.formData.id, payload).toPromise() });
+      }
+
+      // Guardado de estado activo/inactivo si cambió
+      const estadoCambio = this.originalData && this.formData.estado !== this.originalData.estado;
+      if (estadoCambio) {
+        const is_active = this.formData.estado === 'Activo';
+        ops.push({ type: 'active', promise: this.editService.setModuleActive(this.formData.id, is_active).toPromise() });
+      }
+
+      if (ops.length === 0) {
+        this.hasUnsavedChanges = false;
+        this.showMessage('Sin cambios para guardar', 'success');
+        return;
+      }
+
+      const results = await Promise.all(ops.map((o) => o.promise));
+
+      // Evaluar resultados individuales para mantener consistencia con BD
+      let anyFailed = false;
+      for (let i = 0; i < results.length; i++) {
+        const res = results[i];
+        const type = ops[i].type;
+        if (!res?.success) {
+          anyFailed = true;
+          // Revertir cambios de UI para el tipo que falló
+          if (type === 'active' && this.originalData) {
+            this.formData.estado = this.originalData.estado;
+          } else if (type === 'module' && this.originalData) {
+            this.formData.nombre = this.originalData.nombre;
+            this.formData.numero = this.originalData.numero;
+            this.formData.codigoInicial = this.originalData.codigoInicial;
+            this.formData.codigoFinal = this.originalData.codigoFinal;
+          }
+        }
+      }
+
+      if (!anyFailed) {
         this.originalData = { ...this.formData };
         this.hasUnsavedChanges = false;
         this.showMessage('Cambios guardados correctamente', 'success');
       } else {
-        this.showMessage(response?.message || 'Error al guardar los cambios', 'error');
+        this.hasUnsavedChanges = this.hasDataChanged();
+        this.showMessage('Error al guardar los cambios. Se revirtieron los cambios no persistidos.', 'error');
       }
     } catch (error: any) {
       const errorMessage = error?.error?.message || error.message || 'Error desconocido al guardar';
@@ -258,7 +291,7 @@ export class FurnitureConfigComponent implements OnInit, OnDestroy {
   private showMessage(message: string, type: 'success' | 'error') {
     this.saveMessage = message;
     this.saveMessageType = type;
-    
+
     // Auto-clear success messages after 3 seconds
     if (type === 'success') {
       setTimeout(() => this.clearMessage(), 3000);
@@ -275,7 +308,7 @@ export class FurnitureConfigComponent implements OnInit, OnDestroy {
       const confirmed = confirm('Tienes cambios sin guardar. ¿Estás seguro de que quieres salir?');
       if (!confirmed) return;
     }
-    
+
     this.router.navigate(['/admin/ranges-config']);
   }
 
