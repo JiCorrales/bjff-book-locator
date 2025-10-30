@@ -56,6 +56,9 @@ interface BookLocation {
   shelf_range_start: string;
   shelf_range_end: string;
 
+  // Imagen del estante
+  image_path: string | null;
+
   // Código buscado
   searched_code: string;
   searched_key: string;
@@ -154,6 +157,14 @@ async function searchBook(code: string): Promise<BookLocation | null> {
     console.log(`   Nivel: ${location.shelf_level}`);
     console.log(`   Rango: ${location.shelf_range_start} - ${location.shelf_range_end}`);
 
+    console.log(`\n🖼️  IMAGEN DEL ESTANTE:`);
+    if (location.image_path) {
+      console.log(`   Ruta: ${location.image_path}`);
+      console.log(`   URL: http://localhost:3000/images/${location.image_path.replace('output_final/', '')}`);
+    } else {
+      console.log(`   ⚠️  No hay imagen disponible para este estante`);
+    }
+
     console.log(`\n${'='.repeat(70)}`);
     console.log(`📌 RESUMEN:`);
     console.log(`   El libro con código "${code}" se encuentra en:`);
@@ -161,6 +172,9 @@ async function searchBook(code: string): Promise<BookLocation | null> {
     console.log(`   → Cara: ${location.face_name}`);
     console.log(`   → Unidad: ${location.unit_name}`);
     console.log(`   → Estante nivel: ${location.shelf_level}`);
+    if (location.image_path) {
+      console.log(`   → Imagen: ${location.image_path}`);
+    }
     console.log(`${'='.repeat(70)}\n`);
 
     return location;

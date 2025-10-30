@@ -16,8 +16,7 @@ export const pool: Pool = createPool({
   host,
   port: env.DB_PORT,
   user: env.DB_USER,
-  // Omit password property when blank to support local setups without password (e.g., XAMPP)
-  password: env.DB_PASSWORD === '' ? undefined : (env.DB_PASSWORD as string),
+  password: env.DB_PASSWORD,
   database: env.DB_DATABASE,
   waitForConnections: true,
   connectionLimit: env.DB_CONNECTION_LIMIT,

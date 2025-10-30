@@ -3,12 +3,11 @@
  * Lee todos los rangos (range_start, range_end) y calcula key_start y key_end
  */
 
-import * as dotenv from 'dotenv';
 import * as mysql from 'mysql2/promise';
 import { parseClassificationCode } from '../utils/classificationParser/parser';
 
 // Cargar variables de entorno
-dotenv.config();
+require('dotenv').config();
 
 interface RangeRow {
   id: number;

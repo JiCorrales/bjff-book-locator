@@ -125,11 +125,14 @@ database/backups/
 # Claude Code
 # ============================================
 # Mantener configuración de Claude pero no archivos temporales
-.claude/
-!.claude/commands/
 
 # ============================================
 # Project Specific
 # ============================================
 # Postman collections con credenciales (si las tienes)
 postman_test/**/env.*.json
+
+SETUP_QUICK_START.md
+FRONTEND_BACKEND_INTEGRATION.md
+MERGE_GUIDE.md
+/backend/README.md
