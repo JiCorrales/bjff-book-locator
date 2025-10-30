@@ -132,7 +132,7 @@ export async function listUsers(): Promise<UserRecord[]> {
   return rows.map(mapRowToUser);
 }
 
-export async function getUserById(userId: number): Promise<UserRecord | null> {
+export async function getUserById(userId: number, conn?: PoolConnection): Promise<UserRecord | null> {
   const rows = await queryRows<RowDataPacket>(
     `SELECT
        u.userID,
@@ -152,6 +152,7 @@ export async function getUserById(userId: number): Promise<UserRecord | null> {
      GROUP BY u.userID, ap.tecID, u.firstName, u.lastName, u.email, u.isActive, u.createdAt, u.updatedAt
      LIMIT 1`,
     [userId],
+    conn,
   );
 
   if (!rows.length) {
@@ -276,7 +277,7 @@ export async function createUser(data: CreateUserModelInput): Promise<UserRecord
       await query('DELETE FROM AdminProfiles WHERE userID = ?', [userId], conn);
     }
 
-    const created = await getUserById(userId);
+    const created = await getUserById(userId, conn);
     if (!created) {
       throw new Error('No se pudo recuperar el usuario recién creado.');
     }
@@ -354,7 +355,7 @@ export async function updateUser(
       );
     }
 
-    const updated = await getUserById(userId);
+    const updated = await getUserById(userId, conn);
     return updated;
   });
 }

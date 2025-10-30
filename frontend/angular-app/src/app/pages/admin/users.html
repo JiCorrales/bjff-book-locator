@@ -109,7 +109,7 @@
           <th>Rol</th>
           <th>Estado</th>
           <th>Última actualización</th>
-          <th></th>
+          <th class="actions-header">Acciones</th>
         </tr>
       </thead>
       <tbody>
@@ -127,8 +127,10 @@
           </td>
           <td>{{ user.updatedAt | date: 'medium' }}</td>
           <td class="actions">
-            <button class="link" (click)="edit(user)">Editar</button>
-            <button class="link danger" (click)="delete(user)">Eliminar</button>
+            <div class="actions-buttons">
+              <button class="link" (click)="edit(user)">Editar</button>
+              <button class="link danger" (click)="delete(user)">Eliminar</button>
+            </div>
           </td>
         </tr>
         <tr *ngIf="!isLoading && !filteredUsers.length">
