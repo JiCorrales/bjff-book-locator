@@ -133,3 +133,8 @@ database/backups/
 # ============================================
 # Postman collections con credenciales (si las tienes)
 postman_test/**/env.*.json
+
+SETUP_QUICK_START.md
+FRONTEND_BACKEND_INTEGRATION.md
+MERGE_GUIDE.md
+/backend/README.md
