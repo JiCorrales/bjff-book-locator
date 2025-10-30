@@ -1,6 +1,9 @@
 import express, { NextFunction, Request, Response } from 'express';
 import cors, { CorsOptions } from 'cors';
 import chatbotRouter from './routes/chatbot';
+import modulesRouter from './routes/modules';
+import shelvingUnitsRouter from './routes/shelving-units';
+import shelvesRouter from './routes/shelves';
 import { env } from './config/env';
 
 const app = express();
@@ -27,6 +30,9 @@ app.get('/api/health', (_req: Request, res: Response) => {
 });
 
 app.use('/api/chatbot', chatbotRouter);
+app.use('/api/modules', modulesRouter);
+app.use('/api/shelving-units', shelvingUnitsRouter);
+app.use('/api/shelves', shelvesRouter);
 
 app.use((_req: Request, res: Response) => {
   res.status(404).json({ message: 'Recurso no encontrado.' });

@@ -11,6 +11,8 @@
 .box.active{background:#eef2ff;transform:translateY(-1px);color:#1f232b}
 .box:disabled{opacity:.5;cursor:default}
 .panel{background:var(--surface);border:1px solid var(--border-color);border-radius:8px;padding:12px;color:var(--text-color)}
+.loading{padding:12px;background:rgba(99,102,241,.12);border-radius:8px;color:var(--text-color);font-weight:600}
+.alert{padding:12px;background:rgba(220,38,38,.12);border:1px solid rgba(220,38,38,.35);border-radius:8px;color:#ef4444}
 .table{width:100%;border-collapse:separate;border-spacing:0}
 .table thead th{background:var(--surface-muted);text-align:left;padding:10px;font-weight:600;color:var(--text-color)}
 .table tbody td{padding:10px;border-top:1px solid var(--border-color)}

@@ -21,9 +21,9 @@ export const env = Object.freeze({
   CLIENT_ORIGINS: parseOrigins(process.env.CLIENT_ORIGINS || process.env.CLIENT_ORIGIN),
 
   DB_HOST: (process.env.DB_HOST || '127.0.0.1').trim(),
-  DB_PORT: Number(process.env.DB_PORT || 3306),
+  DB_PORT: Number(process.env.DB_PORT || 3307),
   DB_USER: (process.env.DB_USER || 'root').trim(),
-  DB_PASSWORD: process.env.DB_PASSWORD || '',
+  DB_PASSWORD: process.env.DB_PASSWORD || '123456',
   DB_DATABASE: (process.env.DB_DATABASE || 'bjff_book_locator').trim(),
   DB_CONNECTION_LIMIT: parseNumber(process.env.DB_CONNECTION_LIMIT, 10),
   DB_QUEUE_LIMIT: parseNumber(process.env.DB_QUEUE_LIMIT, 0),
